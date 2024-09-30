@@ -420,8 +420,8 @@ find_outcomes_ssc <- function(cohort,
 
     outcome_present <- cdm_tbl(domain_info$domain_tbl) %>%
       inner_join(cohort) %>%
-      filter(domain_info$date_field >= start_date,
-             domain_info$date_field <= end_date) %>%
+      filter(!!sym(domain_info$date_field) >= start_date,
+             !!sym(domain_info$date_field) <= end_date) %>%
       rename('join_col' = colnm) %>%
       inner_join(outcome_concepts, by = c('join_col' = 'concept_id')) %>%
       distinct(!!sym(site_col), person_id, variable) %>% collect() %>%
