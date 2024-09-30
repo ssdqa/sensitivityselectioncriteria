@@ -83,7 +83,8 @@ ssc_process <- function(base_cohort,
   ## parameter summary output
   param_args <- as.list(environment())
 
-  param_args <- param_args[!names(param_args) %in% c('visit_tbl', 'provider_tbl', 'person_tbl')]
+  param_args <- param_args[!names(param_args) %in% c('visit_tbl', 'provider_tbl', 'person_tbl',
+                                                     'base_cohort', 'alt_cohorts')]
 
   output_type <- suppressWarnings(param_summ(check_string = 'ssc',
                                              param_args))
