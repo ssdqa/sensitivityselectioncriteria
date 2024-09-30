@@ -370,11 +370,10 @@ find_specialty_visits <- function(cohort,
     inner_join(specialty_concepts, by = c('specialty_concept_id' = 'concept_id')) %>%
     select(all_of(grouped_list), cohort_id, visit_occurrence_id)
 
-  domain_tbl <- tibble('label' = 'specialty_visits',
+  domain_tbl <- tibble('domain' = 'specialty_visits',
                        'domain_tbl' = 'visit_occurrence',
-                       'source_col' = 'visit_source_concept_id',
-                       'concept_col' = 'visit_concept_id',
-                       'date_col' = 'visit_start_date',
+                       'concept_field' = 'visit_concept_id',
+                       'date_field' = 'visit_start_date',
                        'filter_logic' = NA)
 
   spec_visit_ppy <- compute_domains_ssc(cohort = spec_visits,
