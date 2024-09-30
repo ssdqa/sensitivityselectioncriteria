@@ -86,7 +86,7 @@ ssc_process <- function(base_cohort,
   param_args <- param_args[!names(param_args) %in% c('visit_tbl', 'provider_tbl', 'person_tbl')]
 
   output_type <- suppressWarnings(param_summ(check_string = 'ssc',
-                                             param_args)))
+                                             param_args))
 
   ## Generate patient level output
   pt_lv_chars <- compare_cohort_def(base_cohort = base_cohort,
