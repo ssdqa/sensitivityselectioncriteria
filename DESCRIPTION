@@ -1,0 +1,31 @@
+Package: sensitivityselectioncriteria
+Title: Sensitivity to Selection Criteria
+Version: 0.0.0.9000
+Authors@R: 
+    person("Kaleigh", "Wieand", , "wieandk@chop.edu", role = c("aut", "cre"))
+Description: This package represents one of several modules in the broader SSDQA ecosystem. The Sensitivity to Selection Criteria module compares the demographic and fact presences makeup of a base cohort to alternative cohort definitions.
+License: Artistic-2.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    cli (>= 3.6.3),
+    dplyr (>= 1.1.4),
+    ggiraph (>= 0.8.9),
+    ggplot2 (>= 3.5.0),
+    gt (>= 0.11.0),
+    magrittr,
+    purrr (>= 1.0.2),
+    rlang (>= 1.1.4),
+    smd (>= 0.7.0),
+    stats (>= 4.4.0),
+    stringr (>= 1.5.1),
+    tibble (>= 3.2.1),
+    tidyr (>= 1.3.1),
+    UpSetR (>= 1.4.0)
+Depends: 
+    argos,
+    R (>= 2.10),
+    ssdqa.gen
+LazyData: true
+Remotes: PEDSnet/argos, ssdqa/ssdqa.gen
