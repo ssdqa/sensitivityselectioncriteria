@@ -292,17 +292,17 @@ compute_domains_ssc <- function(cohort,
 
   for (i in 1:length(domain_list)) {
 
-    domain_name = domain_list$domain[[i]]
-    message(paste0('Starting domain ', domain_list$domain[[i]]))
+    domain_name = domain_list[[i]]$domain
+    message(paste0('Starting domain ', domain_list[[i]]$domain))
 
     ## checks to see if the table needs to be filtered in any way;
     ## allow for one filtering operation
 
-    domain_tbl_use <- cdm_tbl(domain_list$domain_tbl[[i]])
+    domain_tbl_use <- cdm_tbl(domain_list[[i]]$domain_tbl)
 
-    if(! is.na(domain_list$filter_logic[[i]])) {
+    if(! is.na(domain_list[[i]]$filter_logic)) {
       domain_tbl_use <- domain_tbl_use %>%
-        filter(!! rlang::parse_expr(domain_list$filter_logic[[i]]))
+        filter(!! rlang::parse_expr(domain_list[[i]]$filter_logic))
     } else {domain_tbl_use <- domain_tbl_use}
 
     ## computes facts per patient by a named list of grouped variables
@@ -310,8 +310,8 @@ compute_domains_ssc <- function(cohort,
     ssc <-
       domain_tbl_use %>%
       inner_join(cohort) %>%
-      filter(!!sym(domain_list$date_field[[i]]) >= start_date,
-             !!sym(domain_list$date_field[[i]]) <= end_date) %>%
+      filter(!!sym(domain_list[[i]]$date_field) >= start_date,
+             !!sym(domain_list[[i]]$date_field) <= end_date) %>%
       group_by(
         !!! syms(grouped_list)
       ) %>% summarise(total_fact_ct=n()) %>%
