@@ -30,7 +30,9 @@ ssc_output <- function(process_output,
 
   }else if(output_function == 'ssc_ms_exp_nt'){
 
-    ssc_output <- ssc_ms_exp_nt(process_output = process_output[[1]])
+    if('list' %in% class(process_output)){inp <- process_output[[1]]}else{inp <- process_output}
+
+    ssc_output <- ssc_ms_exp_nt(process_output = inp)
 
   }else if(output_function == 'ssc_ms_anom_nt'){
 
