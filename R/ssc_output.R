@@ -30,7 +30,7 @@ ssc_output <- function(process_output,
 
   }else if(output_function == 'ssc_ms_exp_nt'){
 
-    ssc_output <- ssc_ms_exp_nt(process_output = process_output)
+    ssc_output <- ssc_ms_exp_nt(process_output = process_output[[1]])
 
   }else if(output_function == 'ssc_ms_anom_nt'){
 
