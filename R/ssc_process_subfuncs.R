@@ -76,7 +76,7 @@ compare_cohort_def <- function(base_cohort,
                                                  'all_conds')){
 
   ## Filter to necessary domains
-  domain_defs <- domain_defs %>% filter(domain %in% domain_select)
+  domain_defs_filt <- domain_defs %>% filter(domain %in% domain_select)
 
   ## Add flags to cohorts
   bc_flag <- base_cohort %>%
@@ -127,7 +127,7 @@ compare_cohort_def <- function(base_cohort,
                                         site_col = site_col,
                                         grouped_list = c(site_col, 'person_id','start_date','end_date',
                                                          'fu', 'cohort_id'),
-                                        domain_tbl = domain_defs)
+                                        domain_tbl = domain_defs_filt)
 
   fact_list[['domain']] <- domain_summary %>% collect()
 
