@@ -414,7 +414,7 @@ find_outcomes_ssc <- function(cohort,
 
   for(i in 1:length(concept_domain)){
 
-    domain_info <- domain_tbl %>% filter(domain_tbl == concept_domain[i])
+    domain_info <- domain_tbl %>% filter(domain == concept_domain[i])
 
     colnm <- domain_info$concept_field
 
