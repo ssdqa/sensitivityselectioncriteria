@@ -279,12 +279,12 @@ ssc_ms_anom_nt <- function(process_output){
     geom_point() +
     #facet_wrap(~cohort_id) +
     facet_grid(cols = vars(cohort_id), rows = vars(fact_group),
-               scales = 'free_y', space = 'free_y',
+               scales = 'free_y',
                labeller = label_wrap_gen()) +
     geom_vline(xintercept = 0, linetype = 'dotted', alpha = 0.5) +
     theme_minimal() +
     scale_color_ssdqa() +
-    scale_y_discrete(expand = c(0.05,0.05)) +
+    scale_y_discrete(expand = c(0.1,0.1)) +
     theme(#axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
           panel.spacing = unit(0, 'lines'),
           strip.background = element_rect(),
