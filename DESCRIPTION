@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Kaleigh", "Wieand", , "wieandk@chop.edu", role = c("aut", "cre"))
 Description: This package represents one of several modules in the broader SSDQA ecosystem. The Sensitivity to Selection Criteria module compares the demographic and fact presences makeup of a base cohort to alternative cohort definitions.
-License: Artistic-2.0
+License: MPL-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
