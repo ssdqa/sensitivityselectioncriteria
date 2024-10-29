@@ -32,7 +32,8 @@ ssc_output <- function(process_output,
 
     if('list' %in% class(process_output)){inp <- process_output[[1]]}else{inp <- process_output}
 
-    ssc_output <- ssc_ms_exp_nt(process_output = inp)
+    ssc_output <- ssc_ms_exp_nt(process_output = inp,
+                                alt_cohort_filter = alt_cohort_filter)
 
   }else if(output_function == 'ssc_ms_anom_nt'){
 
