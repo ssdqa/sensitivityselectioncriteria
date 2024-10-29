@@ -167,7 +167,7 @@ ssc_ms_exp_nt <- function(process_output,
            cohort_characteristic = str_replace_all(cohort_characteristic, '_', ' '),
            cohort_id = str_remove(cohort_id, 'alt_cohort_'),
            cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
-                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: ', cohort_id)),
+                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: \n', cohort_id)),
            tooltip = paste0('Site: ', site,
                             '\nCharacteristic: ', cohort_characteristic,
                             '\nProportion: ', round(fact_summary, 3))) %>%
@@ -184,7 +184,7 @@ ssc_ms_exp_nt <- function(process_output,
                                              TRUE ~ cohort_characteristic),
            cohort_id = str_remove(cohort_id, 'alt_cohort_'),
            cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
-                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: ', cohort_id)),
+                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: \n', cohort_id)),
            tooltip = paste0('Site: ', site,
                             '\nCharacteristic: ', cohort_characteristic,
                             '\nMedian PPY: ', fact_summary)) %>%
@@ -222,7 +222,7 @@ ssc_ms_exp_nt <- function(process_output,
           panel.border = element_rect(fill = NA)) +
     labs(y = 'Median (PPY)',
          x = 'Cohort',
-         fill = 'Site',
+         color = 'Site',
          shape = 'Cohort',
          title = 'Median Facts PPY per Site')
 
@@ -245,12 +245,12 @@ ssc_ms_exp_nt <- function(process_output,
           panel.border = element_rect(fill = NA)) +
     labs(y = 'Proportion',
          x = 'Cohort',
-         fill = 'Site',
+         color = 'Site',
          shape = 'Cohort',
          title = 'Proportion of Patients per Site')
 
-  if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98) +
-    geom_vline(xintercept = 2.02) }
+  if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
+    geom_vline(xintercept = 2.02, linetype = 'dotted') }
 
   cat_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
                                  'tooltip' = TRUE)
