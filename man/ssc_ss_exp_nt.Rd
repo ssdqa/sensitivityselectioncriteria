@@ -11,7 +11,7 @@ ssc_ss_exp_nt(summary_output, cohort_overlap, alt_cohort_filter)
 
 \item{cohort_overlap}{the cohort overlap dataframe output by ssc_process}
 
-\item{alt_cohort_filter}{an integer indicating which alternate cohorts should be
+\item{alt_cohort_filter}{an vector indicating which alternate cohorts should be
 displayed; only 3 are allowed at once to maintain visibility
 in the graph}
 }

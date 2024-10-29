@@ -4,7 +4,8 @@
 #' @import gt
 #' @import UpSetR
 #' @import ggiraph
-#' @importFrom stats IQR
+#' @import ggbump
+#' @importFrom stats quantile
 #' @importFrom stringr str_remove_all
 #' @importFrom stringr str_replace_all
 #' @importFrom tibble deframe
@@ -15,7 +16,7 @@ NULL
 #'
 #' @param summary_output the summary dataframe output by ssc_process
 #' @param cohort_overlap the cohort overlap dataframe output by ssc_process
-#' @param alt_cohort_filter an integer indicating which alternate cohorts should be
+#' @param alt_cohort_filter an vector indicating which alternate cohorts should be
 #'                          displayed; only 3 are allowed at once to maintain visibility
 #'                          in the graph
 #'
@@ -144,19 +145,38 @@ ssc_ss_anom_nt <- function(process_output){
 #' *Multi-Site, Exploratory, No Time*
 #'
 #' @param process_output the output from ssc_process
+#' @param alt_cohort_filter an vector indicating which alternate cohorts should be
+#'                          displayed; only 2 are allowed at once to maintain visibility
+#'                          in the graph
 #'
-#' @return a heat map showing the median facts per person year for each site in each cohort definition
-#'         a bar graph showing the proportion of patients with demographic and outcome characteristics
-#'          for each cohort definition & site
+#' @return two bump charts - one with the continuous facts (that are represented by medians) and
+#' another with the categorical facts (that are represented by proportions)
+#' if two alternate cohort definitions are provided, the base cohort is placed in the middle
+#' of the plot. Otherwise, the base is on the left.
 #'
-ssc_ms_exp_nt <- function(process_output){
+ssc_ms_exp_nt <- function(process_output,
+                          alt_cohort_filter){
 
-  cat_vars <- process_output %>% filter(grepl('prop', cohort_characteristic))
+  if(length(alt_cohort_filter) > 2){
+    cli::cli_abort('Please limit alternate cohort definitions to two or less at a time')}
 
-  cont_vars <- process_output %>% filter(grepl('median', cohort_characteristic))
+  # Categorical variables (proportions)
+  cat_vars <- process_output %>% filter(grepl('prop', cohort_characteristic),
+                                        cohort_id %in% c('base_cohort', alt_cohort_filter)) %>%
+    mutate(cohort_characteristic = str_remove(cohort_characteristic, 'prop_'),
+           cohort_characteristic = str_replace_all(cohort_characteristic, '_', ' '),
+           cohort_id = str_remove(cohort_id, 'alt_cohort_'),
+           cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
+                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: ', cohort_id)),
+           tooltip = paste0('Site: ', site,
+                            '\nCharacteristic: ', cohort_characteristic,
+                            '\nProportion: ', round(fact_summary, 3))) %>%
+    arrange(fact_group) %>%
+    mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
 
-  cont_hm <- cont_vars %>%
-    #pivot_longer(cols = !c(site, cohort_id)) %>%
+  # Continuous variables (medians)
+  cont_vars <- process_output %>% filter(grepl('median', cohort_characteristic),
+                                         cohort_id %in% c('base_cohort', alt_cohort_filter)) %>%
     mutate(cohort_characteristic = str_remove(cohort_characteristic, 'median_'),
            cohort_characteristic = str_remove(cohort_characteristic, '_ppy'),
            cohort_characteristic = str_replace_all(cohort_characteristic, '_', ' '),
@@ -168,47 +188,74 @@ ssc_ms_exp_nt <- function(process_output){
            tooltip = paste0('Site: ', site,
                             '\nCharacteristic: ', cohort_characteristic,
                             '\nMedian PPY: ', fact_summary)) %>%
-    arrange(fact_group) %>% mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic))) %>%
-    ggplot(aes(x = site, y = cf, fill = fact_summary, tooltip = tooltip)) +
-    geom_tile_interactive() +
-    geom_text(aes(label = round(fact_summary, 2)), size = 2) +
-    facet_wrap(~cohort_id, labeller = label_wrap_gen()) +
-    scale_fill_ssdqa(discrete = FALSE, palette = 'diverging') +
-    theme_minimal() +
-    #theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    labs(y = 'Cohort Characteristic',
-         x = 'Site',
-         fill = 'Median (PPY)',
-         title = 'Distribution of Median Facts PPY per Site')
+    arrange(fact_group) %>%
+    mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
 
-  cont_hm[["metadata"]] <- tibble('pkg_backend' = 'ggiraph',
+  # Build vectors based on number of alternate cohorts
+  if(length(alt_cohort_filter) == 2){
+    shape_vec <- c(15, 19, 17)
+    cohort_vec <- cont_vars %>% ungroup() %>% distinct(cohort_id) %>% pull()
+    cat_vars <- cat_vars %>% mutate(cohort_id = factor(cohort_id, levels = c(cohort_vec[[1]], cohort_vec[[3]],
+                                                                             cohort_vec[[2]])))
+    cont_vars <- cont_vars %>% mutate(cohort_id = factor(cohort_id, levels = c(cohort_vec[[1]], cohort_vec[[3]],
+                                                                               cohort_vec[[2]])))
+  }else if(length(alt_cohort_filter == 1)){
+    shape_vec <- c(19, 17)
+    cohort_vec <- cont_vars %>% ungroup() %>% distinct(cohort_id) %>% pull()
+    cat_vars <- cat_vars %>% mutate(cohort_id = factor(cohort_id,
+                                                       levels = c(cohort_vec[[2]], cohort_vec[[1]])))
+    cont_vars <- cont_vars %>% mutate(cohort_id = factor(cohort_id,
+                                                         levels = c(cohort_vec[[2]], cohort_vec[[1]])))
+  }else{cli::cli_abort('Please choose at least one alternate cohort definition')}
+
+  # Plot bump graphs
+  cont_bp <- cont_vars %>%
+    ggplot(aes(x = cohort_id, y = fact_summary, color = site, group = site, text = tooltip)) +
+    geom_bump() +
+    geom_point(size = 2, aes(shape = cohort_id)) +
+    scale_shape_manual(values = shape_vec) +
+    facet_wrap(~cf, scales = 'free_y',
+               labeller = label_wrap_gen(width = 15)) +
+    scale_color_ssdqa() +
+    theme_minimal() +
+    theme(strip.background = element_rect(),
+          panel.border = element_rect(fill = NA)) +
+    labs(y = 'Median (PPY)',
+         x = 'Cohort',
+         fill = 'Site',
+         shape = 'Cohort',
+         title = 'Median Facts PPY per Site')
+
+  if(length(alt_cohort_filter == 2)){cont_bp <- cont_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
+    geom_vline(xintercept = 2.02, linetype = 'dotted')}
+
+  cont_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
                                   'tooltip' = TRUE)
 
-  cat_bars <- cat_vars %>%
-    #pivot_longer(cols = !c(site, cohort_id)) %>%
-    mutate(cohort_characteristic = str_remove(cohort_characteristic, 'prop_'),
-           cohort_characteristic = str_replace_all(cohort_characteristic, '_', ' '),
-           cohort_id = str_remove(cohort_id, 'alt_cohort_'),
-           cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
-                                 cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: ', cohort_id)),
-           tooltip = paste0('Site: ', site,
-                            '\nCharacteristic: ', cohort_characteristic,
-                            '\nProportion: ', round(fact_summary, 3))) %>%
-    arrange(fact_group) %>% mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic))) %>%
-    ggplot(aes(x = fact_summary, y = site, fill = cf, tooltip = tooltip)) +
-    geom_col_interactive() +
-    facet_wrap(~cohort_id, labeller = label_wrap_gen()) +
-    scale_fill_ssdqa() +
+  cat_bp <- cat_vars %>%
+    ggplot(aes(x = cohort_id, y = fact_summary, color = site, group = site, text = tooltip)) +
+    geom_bump() +
+    geom_point(size = 2, aes(shape = cohort_id)) +
+    scale_shape_manual(values = shape_vec) +
+    facet_wrap(~cf, scales = 'free_y',
+               labeller = label_wrap_gen(width = 15)) +
+    scale_color_ssdqa() +
     theme_minimal() +
-    labs(fill = 'Cohort \nCharacteristic',
-         y = 'Site',
-         x = 'Proportion',
-         title = 'Proportion of Patients with Characteristics')
+    theme(strip.background = element_rect(),
+          panel.border = element_rect(fill = NA)) +
+    labs(y = 'Proportion',
+         x = 'Cohort',
+         fill = 'Site',
+         shape = 'Cohort',
+         title = 'Proportion of Patients per Site')
 
-  cat_bars[["metadata"]] <- tibble('pkg_backend' = 'ggiraph',
-                                   'tooltip' = TRUE)
+  if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98) +
+    geom_vline(xintercept = 2.02) }
 
-  otpt <- list(cont_hm, cat_bars)
+  cat_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
+                                 'tooltip' = TRUE)
+
+  otpt <- list(cont_bp, cat_bp)
 
   return(otpt)
 
@@ -231,7 +278,8 @@ ssc_ms_anom_nt <- function(process_output){
     group_by(cohort_id, site) %>%
     summarise(median_smd = median(smd_vs_baseline),
               mean_smd = mean(smd_vs_baseline),
-              iqr_smd = IQR(smd_vs_baseline)) %>%
+              q1_smd = quantile(smd_vs_baseline)[[2]],
+              q3_smd = quantile(smd_vs_baseline)[[4]]) %>%
     mutate(cohort_id = str_remove(cohort_id, 'alt_cohort_'),
            cohort_id = paste0('Alternate Cohort: ', cohort_id)) %>%
     pivot_longer(cols = !c(cohort_id, site)) %>%
@@ -243,8 +291,9 @@ ssc_ms_anom_nt <- function(process_output){
     tab_spanner_delim(delim = '-') %>%
     cols_label(contains('mean') ~ 'Mean',
                contains('median') ~ 'Median',
-               contains('iqr') ~ 'IQR') %>%
-    fmt_number(decimals = 5) %>%
+               contains('q1') ~ 'Q1',
+               contains('q3') ~ 'Q3') %>%
+    fmt_number(decimals = 2) %>%
     opt_stylize(style = 2) %>%
     tab_style(
       style = cell_borders(
@@ -252,13 +301,21 @@ ssc_ms_anom_nt <- function(process_output){
         weight = px(3),
         color = 'black'),
       locations = cells_body(
-        columns = contains('iqr')
+        columns = contains('q3')
       )) %>%
     tab_header('Site SMD Summary Table') %>%
-    data_color(columns = !site,
+    data_color(columns = contains('q1'),
                palette = "Blues",
+               method = 'numeric') %>%
+    data_color(columns = contains('median'),
+               palette = 'Greens',
+               method = 'numeric') %>%
+    data_color(columns = contains('mean'),
+               palette = 'Oranges',
+               method = 'numeric') %>%
+    data_color(columns = contains('q3'),
+               palette = 'Purples',
                method = 'numeric')
-
 
   dat_to_plot <- process_output %>%
     mutate(cohort_characteristic = str_remove(cohort_characteristic, 'median_|prop_'),

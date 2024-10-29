@@ -4,15 +4,20 @@
 \alias{ssc_ms_exp_nt}
 \title{\emph{Multi-Site, Exploratory, No Time}}
 \usage{
-ssc_ms_exp_nt(process_output)
+ssc_ms_exp_nt(process_output, alt_cohort_filter)
 }
 \arguments{
 \item{process_output}{the output from ssc_process}
+
+\item{alt_cohort_filter}{an vector indicating which alternate cohorts should be
+displayed; only 2 are allowed at once to maintain visibility
+in the graph}
 }
 \value{
-a heat map showing the median facts per person year for each site in each cohort definition
-a bar graph showing the proportion of patients with demographic and outcome characteristics
-for each cohort definition & site
+two bump charts - one with the continuous facts (that are represented by medians) and
+another with the categorical facts (that are represented by proportions)
+if two alternate cohort definitions are provided, the base cohort is placed in the middle
+of the plot. Otherwise, the base is on the left.
 }
 \description{
 \emph{Multi-Site, Exploratory, No Time}
