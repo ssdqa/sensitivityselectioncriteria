@@ -226,8 +226,8 @@ ssc_ms_exp_nt <- function(process_output,
          shape = 'Cohort',
          title = 'Median Facts PPY per Site')
 
-  if(length(alt_cohort_filter == 2)){cont_bp <- cont_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
-    geom_vline(xintercept = 2.02, linetype = 'dotted')}
+  # if(length(alt_cohort_filter == 2)){cont_bp <- cont_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
+  #   geom_vline(xintercept = 2.02, linetype = 'dotted')}
 
   cont_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
                                   'tooltip' = TRUE)
@@ -249,8 +249,8 @@ ssc_ms_exp_nt <- function(process_output,
          shape = 'Cohort',
          title = 'Proportion of Patients per Site')
 
-  if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
-    geom_vline(xintercept = 2.02, linetype = 'dotted') }
+  # if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
+  #   geom_vline(xintercept = 2.02, linetype = 'dotted') }
 
   cat_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
                                  'tooltip' = TRUE)
