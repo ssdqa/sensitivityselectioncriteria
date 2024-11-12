@@ -537,8 +537,15 @@ compare_cohort_smd <- function(cohort_def_output){
   smd_list <- list()
 
   for(i in alt_cht_list){
+    alt_exists_check <- prep_tbl %>%
+      group_by(site) %>%
+      filter(cohort_id %in% c('base_cohort', i)) %>%
+      distinct(site, cohort_id) %>%
+      summarise(n_cht = n()) %>%
+      filter(n_cht < 2) %>% ungroup() %>% pull(site)
 
     smd_tbl <- prep_tbl %>%
+      filter(!site %in% alt_exists_check) %>%
       group_by(site) %>%
       filter(cohort_id %in% c('base_cohort', i)) %>%
       summarize_at(
