@@ -103,7 +103,7 @@ ssc_process <- function(base_cohort,
                                                      'base_cohort', 'alt_cohorts', 'care_site_tbl')]
 
   output_type <- suppressWarnings(param_summ(check_string = 'ssc',
-                                             as.list(environment())))
+                                             param_args))
 
   if(tolower(omop_or_pcornet) == 'omop'){
 
