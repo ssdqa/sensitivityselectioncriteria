@@ -231,7 +231,7 @@ ssc_ms_exp_nt <- function(process_output,
   # if(length(alt_cohort_filter == 2)){cont_bp <- cont_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
   #   geom_vline(xintercept = 2.02, linetype = 'dotted')}
 
-  cont_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
+  cont_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly_ssc',
                                   'tooltip' = TRUE)
 
   cat_bp <- cat_vars %>%
