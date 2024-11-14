@@ -117,12 +117,14 @@ find_outcomes_ssc <- function(cohort,
       join_cols <- join_cols %>% append(join_cols2)
     }
 
+    outcome_db <- copy_to_new(df = outcome_concepts)
+
     outcome_present <- cdm_tbl(domain_info$domain_tbl) %>%
       inner_join(cohort) %>%
       filter(!!sym(domain_info$date_field) >= start_date,
              !!sym(domain_info$date_field) <= end_date) %>%
       #rename('join_col' = colnm) %>%
-      inner_join(outcome_concepts, by = join_cols) %>%
+      inner_join(outcome_db, by = join_cols) %>%
       distinct(!!sym(site_col), !!sym(person_col), variable) %>% collect() %>%
       mutate(has_outcome = TRUE)
 
@@ -227,7 +229,7 @@ compare_cohort_smd <- function(cohort_def_output){
 
   if('person_id' %in% names(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
 
-  var_vec <- names(prep_tbl)[!names(prep_tbl) %in% c('site', !!sym(person_col), 'cohort_id')]
+  var_vec <- names(prep_tbl)[!names(prep_tbl) %in% c('site', person_col, 'cohort_id')]
 
   alt_cht_list <- prep_tbl %>% filter(grepl('alt', cohort_id)) %>%
     distinct(cohort_id) %>%

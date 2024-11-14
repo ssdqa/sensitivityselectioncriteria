@@ -5,7 +5,7 @@
 \alias{ssc_domain_file}
 \title{SSC Sample Domain File}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2 rows and 5 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2 rows and 6 columns.
 }
 \usage{
 ssc_domain_file
@@ -23,6 +23,7 @@ A data frame with 2 rows and 5 columns
 \item{domain_tbl}{The name of the CDM table associated with the domain of interest}
 \item{concept_field}{The name of the column in the domain table that contains the concepts of interest listed in the concept_set file.}
 \item{date_field}{The name of the column in the domain table that contains dates to be used for time-based filtering.}
+\item{vocabulary_field}{(PCORnet only) The name of the column in the domain table where the vocabulary type is stored}
 \item{filter_logic}{(optional) a string to be parsed as logic to filter the domain_tbl as needed to best represent the domain}
 }
 }

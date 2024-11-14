@@ -304,17 +304,19 @@ find_specialty_visits_omop <- function(cohort,
                                       care_site_tbl = NULL,
                                       visit_tbl = cdm_tbl('visit_occurrence')){
 
+  spec_db <- copy_to_new(df = specialty_concepts)
+
   if(is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
       inner_join(provider_tbl %>% select(provider_id, specialty_concept_id)) %>%
-      inner_join(specialty_concepts, by = c('specialty_concept_id' = 'concept_id')) %>%
+      inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
       select(all_of(grouped_list), cohort_id, visit_occurrence_id)
   }else if(!is.null(care_site_tbl) && is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
       inner_join(care_site_tbl %>% select(care_site_id, specialty_concept_id)) %>%
-      inner_join(specialty_concepts, by = c('specialty_concept_id' = 'concept_id')) %>%
+      inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
       select(all_of(grouped_list), cohort_id, visit_occurrence_id)
   }else if(!is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
@@ -325,7 +327,7 @@ find_specialty_visits_omop <- function(cohort,
                   rename('cs_spec' = specialty_concept_id)) %>%
       mutate(specialty_concept_id = ifelse(is.na(pv_spec), cs_spec, pv_spec)) %>%
       select(-c(cs_spec, pv_spec)) %>%
-      inner_join(specialty_concepts, by = c('specialty_concept_id' = 'concept_id')) %>%
+      inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
       select(all_of(grouped_list), cohort_id, visit_occurrence_id)
   }
 
