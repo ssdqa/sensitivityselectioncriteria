@@ -169,6 +169,7 @@ ssc_ms_exp_nt <- function(process_output,
            cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
                                  cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: \n', cohort_id)),
            tooltip = paste0('Site: ', site,
+                            '\nCohort: ', cohort_id,
                             '\nCharacteristic: ', cohort_characteristic,
                             '\nProportion: ', round(fact_summary, 3))) %>%
     arrange(fact_group) %>%
@@ -186,6 +187,7 @@ ssc_ms_exp_nt <- function(process_output,
            cohort_id = case_when(cohort_id == 'base_cohort' ~ 'Base Cohort',
                                  cohort_id != 'base_cohort' ~ paste0('Alternate Cohort: \n', cohort_id)),
            tooltip = paste0('Site: ', site,
+                            '\nCohort: ', cohort_id,
                             '\nCharacteristic: ', cohort_characteristic,
                             '\nMedian PPY: ', fact_summary)) %>%
     arrange(fact_group) %>%
@@ -252,7 +254,7 @@ ssc_ms_exp_nt <- function(process_output,
   # if(length(alt_cohort_filter == 2)){cat_bp <- cat_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
   #   geom_vline(xintercept = 2.02, linetype = 'dotted') }
 
-  cat_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly',
+  cat_bp[["metadata"]] <- tibble('pkg_backend' = 'plotly_ssc',
                                  'tooltip' = TRUE)
 
   otpt <- list(cont_bp, cat_bp)
