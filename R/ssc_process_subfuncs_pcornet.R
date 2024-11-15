@@ -302,7 +302,7 @@ find_specialty_visits_pcnt <- function(cohort,
                                       grouped_list,
                                       provider_tbl = NULL,
                                       care_site_tbl = NULL,
-                                      visit_tbl = cdm_tbl('visit_occurrence')){
+                                      visit_tbl = cdm_tbl('encounter')){
 
   spec_db <- copy_to_new(df = specialty_concepts)
 
@@ -311,13 +311,13 @@ find_specialty_visits_pcnt <- function(cohort,
       inner_join(cohort) %>%
       inner_join(provider_tbl %>% select(providerid, provider_specialty_primary)) %>%
       inner_join(spec_db, by = c('provider_specialty_primary' = 'concept_code')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, encounterid)
   }else if(!is.null(care_site_tbl) && is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
       inner_join(care_site_tbl %>% select(facilityid, facility_type)) %>%
       inner_join(spec_db, by = c('facility_type' = 'concept_code')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, encounterid)
   }else if(!is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
@@ -328,7 +328,7 @@ find_specialty_visits_pcnt <- function(cohort,
       mutate(specialty_concept_id = ifelse(is.na(pv_spec), cs_spec, pv_spec)) %>%
       select(-c(cs_spec, pv_spec)) %>%
       inner_join(spec_db, by = c('specialty_concept_id' = 'concept_code')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, encounterid)
   }
 
   domain_tbl <- tibble('domain' = 'specialty_visits',

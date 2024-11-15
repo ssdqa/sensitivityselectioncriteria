@@ -11,7 +11,7 @@ find_specialty_visits_pcnt(
   grouped_list,
   provider_tbl = NULL,
   care_site_tbl = NULL,
-  visit_tbl = cdm_tbl("visit_occurrence")
+  visit_tbl = cdm_tbl("encounter")
 )
 }
 \arguments{
