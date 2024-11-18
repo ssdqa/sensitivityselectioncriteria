@@ -156,16 +156,20 @@ compare_cohort_def_omop <- function(base_cohort,
   ## Specialty summaries
   if(!is.null(specialty_concepts)){
 
-    spec_visits <- find_specialty_visits_omop(cohort = cohort_prep,
-                                             site_col = site_col,
-                                             specialty_concepts = specialty_concepts,
-                                             grouped_list = c(site_col, 'person_id','start_date','end_date',
-                                                              'fu', 'cohort_id'),
-                                             provider_tbl = provider_tbl,
-                                             care_site_tbl = care_site_tbl,
-                                             visit_tbl = visit_tbl)
+    if(!is.null(provider_tbl) || !is.null(care_site_tbl)){
 
-    fact_list[['spec']] <- spec_visits %>% collect() %>% distinct()
+      spec_visits <- find_specialty_visits_omop(cohort = cohort_prep,
+                                               site_col = site_col,
+                                               specialty_concepts = specialty_concepts,
+                                               grouped_list = c(site_col, 'person_id','start_date','end_date',
+                                                                'fu', 'cohort_id'),
+                                               provider_tbl = provider_tbl,
+                                               care_site_tbl = care_site_tbl,
+                                               visit_tbl = visit_tbl)
+
+      fact_list[['spec']] <- spec_visits %>% collect() %>% distinct()
+
+    }else{cli::cli_alert_warning('Neither provider nor care site/facility cdm tables were provided - skipped specialty visits')}
   }
 
   ## Outcome summaries
