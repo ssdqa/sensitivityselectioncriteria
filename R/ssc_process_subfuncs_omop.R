@@ -266,7 +266,7 @@ compute_demographic_summary_omop <- function(cohort_tbl,
   age_ced <- new_person %>%
     mutate(age_cohort_entry = as.numeric(as.Date(start_date) - birth_date),
            age_cohort_entry = round(age_cohort_entry / 365.25, 2)) %>%
-    select(-c(year_of_birth, day_of_birth, month_of_birth, birth_date))
+    select(!!sym(site_col), person_id, age_cohort_entry)
 
   age_first_visit <- visit_tbl %>%
     select(person_id, visit_start_date) %>%
@@ -278,7 +278,7 @@ compute_demographic_summary_omop <- function(cohort_tbl,
     left_join(new_person) %>%
     mutate(age_first_visit = as.numeric(as.Date(min_visit) - birth_date),
            age_first_visit = round(age_first_visit / 365.25, 2)) %>%
-    select(-c(min_visit, birth_date, year_of_birth, day_of_birth, month_of_birth)) #%>%
+    select(!!sym(site_col), person_id, age_first_visit) #%>%
     #collect()
 
   summ_tbl <- demographic %>%
