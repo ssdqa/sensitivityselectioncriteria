@@ -4,7 +4,7 @@
 \alias{ssc_output}
 \title{Sensitivity to Selection Criteria Output}
 \usage{
-ssc_output(process_output, output_function, alt_cohort_filter)
+ssc_output(process_output, output_function, alt_cohort_filter = NULL)
 }
 \arguments{
 \item{process_output}{the output from \code{ssc_process}}

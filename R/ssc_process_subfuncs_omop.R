@@ -238,9 +238,9 @@ compute_demographic_summary_omop <- function(cohort_tbl,
   new_person <- build_birth_date(cohort = cohort_tbl,
                                  person_tbl = person_tbl)
 
-  demographic <- new_person %>%
-    mutate(age_cohort_entry = round((start_date - birth_date) / 365.25, 2),
-           black = case_when(race_concept_id %in% black_codes ~ TRUE,
+  demographic <- person_tbl %>%
+    inner_join(cohort_tbl) %>%
+    mutate(black = case_when(race_concept_id %in% black_codes ~ TRUE,
                              TRUE ~ FALSE),
            white = case_when(race_concept_id %in% white_codes ~ TRUE,
                              TRUE ~ FALSE),
@@ -256,23 +256,30 @@ compute_demographic_summary_omop <- function(cohort_tbl,
                                 TRUE ~ FALSE),
            female = case_when(gender_concept_id %in% female_codes ~ TRUE,
                               TRUE ~ FALSE)) %>%
-    select(!!sym(site_col), person_id, start_date, end_date, fu, cohort_id, age_cohort_entry:female) #%>%
-    #collect()
+    select(!!sym(site_col), person_id, start_date, end_date, fu, cohort_id, black:female) %>%
+    collect()
+
+  age_ced <- new_person %>%
+    mutate(age_cohort_entry = as.numeric(as.Date(start_date) - birth_date),
+           age_cohort_entry = round(age_cohort_entry / 365.25, 2)) %>%
+    select(-c(year_of_birth, day_of_birth, month_of_birth, birth_date))
 
   age_first_visit <- visit_tbl %>%
-    select(person_id, visit_start_date)
+    select(person_id, visit_start_date) %>%
     inner_join(cohort_tbl) %>%
     # inner_join(select(visit_tbl, person_id, visit_start_date)) %>%
     group_by(!!sym(site_col), person_id, cohort_id) %>%
     summarise(min_visit = min(visit_start_date)) %>%
     collect() %>%
     left_join(new_person) %>%
-    mutate(age_first_visit = round((min_visit - birth_date) / 365.25, 2)) %>%
+    mutate(age_first_visit = as.numeric(as.Date(min_visit) - birth_date),
+           age_first_visit = round(age_first_visit / 365.25, 2)) %>%
     select(-c(min_visit, birth_date, year_of_birth, day_of_birth, month_of_birth)) #%>%
     #collect()
 
   summ_tbl <- demographic %>%
-    left_join(age_first_visit)
+    left_join(age_first_visit) %>%
+    left_join(age_ced)
 
 
 }

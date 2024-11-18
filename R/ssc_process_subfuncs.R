@@ -90,6 +90,7 @@ compute_domains_ssc <- function(cohort,
 #'         have the outcome(s) of interest
 #'
 #' @importFrom tidyr pivot_wider
+#' @importFrom purrr set_names
 #'
 find_outcomes_ssc <- function(cohort,
                               site_col,

@@ -12,8 +12,8 @@ ssc_process(
   anomaly_or_exploratory = "exploratory",
   person_tbl = cdm_tbl("person"),
   visit_tbl = cdm_tbl("visit_occurrence"),
-  provider_tbl = cdm_tbl("provider"),
-  care_site_tbl = cdm_tbl("care_site"),
+  provider_tbl = NULL,
+  care_site_tbl = NULL,
   black_codes = c("8516"),
   white_codes = c("8527"),
   asian_codes = c("8515"),
@@ -25,8 +25,7 @@ ssc_process(
   specialty_concepts = NULL,
   outcome_concepts = NULL,
   domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
-  domain_select = c("inpatient_visits", "outpatient_visits", "emergency_visits",
-    "prescription_medications", "diagnoses")
+  domain_select = domain_tbl \%>\% distinct(domain) \%>\% pull()
 )
 }
 \arguments{
