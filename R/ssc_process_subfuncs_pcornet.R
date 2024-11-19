@@ -235,7 +235,7 @@ compute_demographic_summary_pcnt <- function(cohort_tbl,
     collect() %>%
     mutate(age_cohort_entry = as.numeric(as.Date(start_date) - birth_date),
            age_cohort_entry = round(age_cohort_entry / 365.25, 2)) %>%
-    distinct(!!sym(site_col), person_id, age_cohort_entry)
+    distinct(!!sym(site_col), patid, age_cohort_entry)
 
   age_first_visit <- person_tbl %>%
     inner_join(cohort_tbl) %>%
