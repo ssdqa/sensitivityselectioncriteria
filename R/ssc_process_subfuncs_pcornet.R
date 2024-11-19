@@ -243,7 +243,8 @@ compute_demographic_summary_pcnt <- function(cohort_tbl,
     group_by(!!sym(site_col), patid, cohort_id, birth_date) %>%
     summarise(min_visit = min(admit_date)) %>%
     collect() %>%
-    mutate(age_first_visit = round((min_visit - birth_date) / 365.25, 2)) %>%
+    mutate(age_first_visit = as.numeric(as.Date(min_visit) - birth_date),
+           age_first_visit = round(age_first_visit / 365.25, 2)) %>%
     select(-c(min_visit, birth_date)) #%>%
     #collect()
 
