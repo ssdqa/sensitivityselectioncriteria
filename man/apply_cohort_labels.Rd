@@ -4,10 +4,13 @@
 \alias{apply_cohort_labels}
 \title{Add labels to cohort variable groups}
 \usage{
-apply_cohort_labels(df)
+apply_cohort_labels(df, demographic_vector)
 }
 \arguments{
 \item{df}{the output of compare_cohort_def including all variables computed}
+
+\item{demographic_vector}{a vector of demographic categories provided in
+demographic_mappings; ensures all demographics are captured under the appropriate label}
 }
 \value{
 returns the same input dataframe with an additional fact_group column

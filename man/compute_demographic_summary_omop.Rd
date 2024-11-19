@@ -9,14 +9,7 @@ compute_demographic_summary_omop(
   site_col,
   person_tbl = cdm_tbl("person"),
   visit_tbl = cdm_tbl("visit_occurrence"),
-  black_codes = c("8516"),
-  white_codes = c("8527"),
-  asian_codes = c("8515"),
-  mixrace_codes = c("44814659"),
-  unknown_codes = c("44814660", "44814650", "44814653"),
-  other_codes = c("44814649", "8657", "8557"),
-  hispanic_codes = c("38003563"),
-  female_codes = c("8532")
+  demographic_mappings = sensitivityselectioncriteria::ssc_omop_demographics
 )
 }
 \arguments{
@@ -29,36 +22,15 @@ site, person_id, start_date, end_date}
 
 \item{visit_tbl}{CDM \code{visit_occurrence} table}
 
-\item{black_codes}{list of codes that indicate that a patient is Black/African-American
-defaults to standard OMOP vocabulary -- \code{8516}}
-
-\item{white_codes}{list of codes that indicate that a patient is White/Caucasian
-defaults to standard OMOP vocabulary -- \code{8527}}
-
-\item{asian_codes}{list of codes that indicate that a patient is Asian
-defaults to standard OMOP vocabulary -- \code{8515}}
-
-\item{mixrace_codes}{list of codes that indicate that a patient is Mixed Race
-defaults to standard OMOP vocabulary -- \code{44814659}}
-
-\item{unknown_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to standard OMOP vocabulary -- \code{44814660}, \code{44814650}, \code{44814653}}
-
-\item{other_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to -- \code{44814649}, \code{8657}, \code{8557}}
-
-\item{hispanic_codes}{list of codes that indicate that a patient is Hispanic or Latino
-defaults to standard OMOP vocabulary -- \code{38003563}}
-
-\item{female_codes}{list of codes that inidicate that a patient is Female
-defaults to standard OMOP vocabulary -- \code{8532}}
+\item{demographic_mappings}{table defining how demographic elements should be defined; defaults
+to \code{ssc_omop_demographics}; any additional demographic elements must be found in the person_tbl}
 }
 \value{
 one dataframe with one row for each patient with columns
 to show which facts apply to each patient:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    fu, age_cohort_entry, age_first_visit, black, white, asian,
-    mixed, unknown, hispanic, female
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    fu, age_cohort_entry, age_first_visit, and each of the demographic
+    elements found in demographic_mappings
 }\if{html}{\out{</div>}}
 }
 \description{

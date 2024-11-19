@@ -23,7 +23,7 @@ ssc_outcome_file
 }
 \description{
 A sample version of the file structure expected for the \code{outcome_concepts}
-parameted in the \code{ssc_process} function. The user should recreate this
+parameter in the \code{ssc_process} function. The user should recreate this
 file and include their own clinical concepts.
 }
 \keyword{datasets}

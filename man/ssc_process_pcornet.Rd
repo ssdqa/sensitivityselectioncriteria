@@ -13,19 +13,12 @@ ssc_process_pcornet(
   visit_tbl = cdm_tbl("encounter"),
   provider_tbl = cdm_tbl("provider"),
   care_site_tbl = cdm_tbl("encounter"),
-  black_codes = c("03"),
-  white_codes = c("05"),
-  asian_codes = c("02"),
-  mixrace_codes = c("06"),
-  unknown_codes = c("NI", "UN", "07"),
-  other_codes = c("OT", "01", "04"),
-  hispanic_codes = c("Y"),
-  female_codes = c("F"),
+  demographic_mappings = sensitivityselectioncriteria::ssc_pcornet_demographics,
   specialty_concepts = NULL,
   outcome_concepts = NULL,
   domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
-  domain_select = c("inpatient_visits", "outpatient_visits", "emergency_visits",
-    "prescription_medications", "diagnoses")
+  domain_select = sensitivityselectioncriteria::ssc_domain_file \%>\% distinct(domain)
+    \%>\% pull()
 )
 }
 \arguments{
@@ -56,29 +49,10 @@ only used if \code{specialty_concepts} are provided
 if provider_tbl & care_site_tbl are both not null, provider specialty is
 prioritized}
 
-\item{black_codes}{list of codes that indicate that a patient is Black/African-American
-defaults to standard PCORnet vocabulary -- \code{03}}
-
-\item{white_codes}{list of codes that indicate that a patient is White/Caucasian
-defaults to standard PCORnet vocabulary -- \code{05}}
-
-\item{asian_codes}{list of codes that indicate that a patient is Asian
-defaults to standard PCORnet vocabulary -- \code{02}}
-
-\item{mixrace_codes}{list of codes that indicate that a patient is Mixed Race
-defaults to standard PCORnet vocabulary -- \code{06}}
-
-\item{unknown_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to standard PCORnet vocabulary -- \code{NI}, \code{UN}, \code{07}}
-
-\item{other_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to -- \code{OT}, \code{01}, \code{04}}
-
-\item{hispanic_codes}{list of codes that indicate that a patient is Hispanic or Latino
-defaults to standard PCORnet vocabulary -- \code{Y}}
-
-\item{female_codes}{list of codes that inidicate that a patient is Female
-defaults to standard PCORnet vocabulary -- \code{F}}
+\item{demographic_mappings}{table defining how demographic elements should be defined
+if NULL, the default demographic mappings for the CDM will be used
+(\code{ssc_pcornet_demographics})
+otherwise, the user provided table will be used}
 
 \item{specialty_concepts}{a concept set with provider specialty concepts of interest
 to be used to identify specialty visits}

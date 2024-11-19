@@ -147,7 +147,9 @@ find_outcomes_ssc <- function(cohort,
 
 #' Compute definition level summary
 #'
-#' @param cohort_def_output the output of
+#' @param cohort_def_output the output of compare_cohort_def
+#' @param demographic_vector a vector of demographic categories provided in
+#' demographic_mappings; ensures all demographics are captured under the appropriate label
 #'
 #' @return a dataframe with summary output for each cohort definition. for demographics and outcomes,
 #'         proportions are computed. for other variables, median fact counts ppy are computed
@@ -156,7 +158,8 @@ find_outcomes_ssc <- function(cohort,
 #' @importFrom tidyr unite
 #' @importFrom stats median
 #'
-compute_cohort_summaries <- function(cohort_def_output){
+compute_cohort_summaries <- function(cohort_def_output,
+                                     demographic_vector){
 
   if('person_id' %in% names(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
 
@@ -169,7 +172,7 @@ compute_cohort_summaries <- function(cohort_def_output){
     pivot_longer(cols = !c(site, !!sym(person_col), start_date, end_date, cohort_id),
                  names_to = 'cohort_characteristic',
                  values_to = 'fact_value') %>%
-    apply_cohort_labels()
+    apply_cohort_labels(demographic_vector = demographic_vector)
 
   ## Summarise patient level data into medians (ppy vars) and proportions (demographic & outcome vars)
   find_medians <- cohort_flip %>%
@@ -214,6 +217,8 @@ compute_cohort_summaries <- function(cohort_def_output){
 #' Compute Standardized Mean Difference between cohort definitions
 #'
 #' @param cohort_def_output the output of compare_cohort_def
+#' @param demographic_vector a vector of demographic categories provided in
+#' demographic_mappings; ensures all demographics are captured under the appropriate label
 #'
 #' @return a summarized dataframe where the standardized mean difference between each
 #'         alternate cohort definition and the base definition is computed for each of
@@ -222,7 +227,8 @@ compute_cohort_summaries <- function(cohort_def_output){
 #' @import smd
 #' @importFrom stringr str_remove
 #'
-compare_cohort_smd <- function(cohort_def_output){
+compare_cohort_smd <- function(cohort_def_output,
+                               demographic_vector){
 
   prep_tbl <- cohort_def_output %>%
     select(-c(start_date, end_date)) %>%
@@ -265,24 +271,26 @@ compare_cohort_smd <- function(cohort_def_output){
                  values_to = 'smd_vs_baseline') %>%
     #cross_join(distinct(cohort_def_output, site)) %>%
     mutate(cohort_characteristic = str_remove(cohort_characteristic, '_smd')) %>%
-    apply_cohort_labels()
+    apply_cohort_labels(demographic_vector = demographic_vector)
 
 }
 
 #' Add labels to cohort variable groups
 #'
 #' @param df the output of compare_cohort_def including all variables computed
+#' @param demographic_vector a vector of demographic categories provided in
+#' demographic_mappings; ensures all demographics are captured under the appropriate label
 #'
 #' @return returns the same input dataframe with an additional fact_group column
 #'         that labels each of the computed variables for easier grouping
 #'
-apply_cohort_labels <- function(df){
+apply_cohort_labels <- function(df,
+                                demographic_vector){
 
   df %>%
     mutate(fact_group = case_when(grepl('fu|age', cohort_characteristic) ~ 'Cohort Details',
                                   grepl('visit', cohort_characteristic) ~ 'Utilization',
-                                  cohort_characteristic %in% c('white', 'unknown_race', 'mixed_race', 'hispanic', 'female',
-                                                               'black', 'asian', 'other_race') ~ 'Demographics',
+                                  cohort_characteristic %in% demographic_vector ~ 'Demographics',
                                   grepl('ppy', cohort_characteristic) ~ 'Clinical Facts',
                                   TRUE ~ 'Outcomes'))
 

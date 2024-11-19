@@ -21,7 +21,7 @@
 #' SSC Sample Outcomes Concept Set
 #'
 #' A sample version of the file structure expected for the `outcome_concepts`
-#' parameted in the `ssc_process` function. The user should recreate this
+#' parameter in the `ssc_process` function. The user should recreate this
 #' file and include their own clinical concepts.
 #'
 #' @format ## ssc_outcome_file
@@ -36,3 +36,41 @@
 #' }
 #'
 "ssc_outcome_file"
+
+#' SSC Demographic Mappings -- OMOP
+#'
+#' A sample version of the file structure expected for the `demographic_mappings`
+#' parameter in the `ssc_process` function. The user should recreate this
+#' file and include their own clinical concepts.
+#'
+#' If the parameter is left NULL, this file or its PCORnet compliment will be used
+#' in place of custom mappings.
+#'
+#' @format ## ssc_omop_demographics
+#' A data frame with 6 rows and 6 columns
+#' \describe{
+#'   \item{demographic}{a string used to identify the demographic category}
+#'   \item{concept_field}{the name of the field in the CDM person table containing the appropriate demographic information}
+#'   \item{field_values}{the values in concept_field that represent the demographic category}
+#' }
+#'
+"ssc_omop_demographics"
+
+#' SSC Demographic Mappings -- PCORnet
+#'
+#' A sample version of the file structure expected for the `demographic_mappings`
+#' parameter in the `ssc_process` function. The user should recreate this
+#' file and include their own clinical concepts.
+#'
+#' If the parameter is left NULL, this file or its OMOP compliment will be used
+#' in place of custom mappings.
+#'
+#' @format ## ssc_pcornet_demographics
+#' A data frame with 6 rows and 6 columns
+#' \describe{
+#'   \item{demographic}{a string used to identify the demographic category}
+#'   \item{concept_field}{the name of the field in the CDM demographic table containing the appropriate demographic information}
+#'   \item{field_values}{the values in concept_field that represent the demographic category}
+#' }
+#'
+"ssc_pcornet_demographics"

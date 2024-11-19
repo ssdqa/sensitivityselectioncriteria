@@ -4,10 +4,13 @@
 \alias{compare_cohort_smd}
 \title{Compute Standardized Mean Difference between cohort definitions}
 \usage{
-compare_cohort_smd(cohort_def_output)
+compare_cohort_smd(cohort_def_output, demographic_vector)
 }
 \arguments{
 \item{cohort_def_output}{the output of compare_cohort_def}
+
+\item{demographic_vector}{a vector of demographic categories provided in
+demographic_mappings; ensures all demographics are captured under the appropriate label}
 }
 \value{
 a summarized dataframe where the standardized mean difference between each

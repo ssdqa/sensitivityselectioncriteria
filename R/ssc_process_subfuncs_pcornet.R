@@ -17,22 +17,10 @@
 #'                      only used if `specialty_concepts` are provided
 #'                      if provider_tbl & care_site_tbl are both not null, provider specialty is
 #'                      prioritized
-#' @param black_codes list of codes that indicate that a patient is Black/African-American
-#'                    defaults to standard OMOP vocabulary -- `8516`
-#' @param white_codes list of codes that indicate that a patient is White/Caucasian
-#'                    defaults to standard OMOP vocabulary -- `8527`
-#' @param asian_codes list of codes that indicate that a patient is Asian
-#'                    defaults to standard OMOP vocabulary -- `8515`
-#' @param mixrace_codes list of codes that indicate that a patient is Mixed Race
-#'                      defaults to standard OMOP vocabulary -- `44814659`
-#' @param unknown_codes list of codes that indicate that a patient's race is Unknown
-#'                      defaults to standard OMOP vocabulary -- `44814660`, `44814650`, `44814653`
-#' @param other_codes list of codes that indicate that a patient's race is Unknown
-#'                    defaults to -- `44814649`, `8657`, `8557`
-#' @param hispanic_codes list of codes that indicate that a patient is Hispanic or Latino
-#'                       defaults to standard OMOP vocabulary -- `38003563`
-#' @param female_codes list of codes that inidicate that a patient is Female
-#'                     defaults to standard OMOP vocabulary -- `8532`
+#' @param demographic_mappings table defining how demographic elements should be defined
+#'                             if NULL, the default demographic mappings for the CDM will be used
+#'                             (`ssc_pcornet_demographics`)
+#'                             otherwise, the user provided table will be used
 #' @param specialty_concepts a concept set with provider specialty concepts of interest
 #'                           to be used to identify specialty visits
 #' @param outcome_concepts a concept set with the following columns:
@@ -66,20 +54,20 @@ compare_cohort_def_pcnt <- function(base_cohort,
                                    visit_tbl = cdm_tbl('encounter'),
                                    provider_tbl = NULL,
                                    care_site_tbl = NULL,
-                                   black_codes = c('03'),
-                                   white_codes = c('05'),
-                                   asian_codes = c('02'),
-                                   mixrace_codes = c('06'),
-                                   unknown_codes = c('NI', 'UN', '07'),
-                                   other_codes = c('OT', '01', '04'),
-                                   hispanic_codes = c('Y'),
-                                   female_codes = c('F'),
+                                   demographic_mappings = sensitivityselectioncriteria::ssc_pcornet_demographics,
+                                   # black_codes = c('03'),
+                                   # white_codes = c('05'),
+                                   # asian_codes = c('02'),
+                                   # mixrace_codes = c('06'),
+                                   # unknown_codes = c('NI', 'UN', '07'),
+                                   # other_codes = c('OT', '01', '04'),
+                                   # hispanic_codes = c('Y'),
+                                   # female_codes = c('F'),
                                    specialty_concepts = NULL,
                                    outcome_concepts = NULL,
                                    domain_defs = sensitivityselectioncriteria::ssc_domain_file,
-                                   domain_select = c('inpatient_visits', 'outpatient_visits', 'emergency_visits',
-                                                     'other_visits', 'all_px', 'prescription_medications',
-                                                     'all_conds')){
+                                   domain_select = sensitivityselectioncriteria::ssc_domain_file %>%
+                                     distinct(domain) %>% pull()){
 
   ## Filter to necessary domains
   domain_defs_filt <- domain_defs %>% filter(domain %in% domain_select)
@@ -142,14 +130,7 @@ compare_cohort_def_pcnt <- function(base_cohort,
                                                   site_col = site_col,
                                                   person_tbl = person_tbl,
                                                   visit_tbl = visit_tbl,
-                                                  black_codes = black_codes,
-                                                  white_codes = white_codes,
-                                                  asian_codes = asian_codes,
-                                                  mixrace_codes = mixrace_codes,
-                                                  unknown_codes = unknown_codes,
-                                                  other_codes = other_codes,
-                                                  hispanic_codes = hispanic_codes,
-                                                  female_codes = female_codes)
+                                                  demographic_mappings = demographic_mappings)
 
   fact_list[['demo']] <- demo_summary
 
@@ -202,77 +183,73 @@ compare_cohort_def_pcnt <- function(base_cohort,
 #' @param site_col the column in the cohort_tbl with the site name(s)
 #' @param person_tbl CDM `person` table
 #' @param visit_tbl CDM `visit_occurrence` table
-#' @param black_codes list of codes that indicate that a patient is Black/African-American
-#'                    defaults to standard OMOP vocabulary -- `8516`
-#' @param white_codes list of codes that indicate that a patient is White/Caucasian
-#'                    defaults to standard OMOP vocabulary -- `8527`
-#' @param asian_codes list of codes that indicate that a patient is Asian
-#'                    defaults to standard OMOP vocabulary -- `8515`
-#' @param mixrace_codes list of codes that indicate that a patient is Mixed Race
-#'                      defaults to standard OMOP vocabulary -- `44814659`
-#' @param unknown_codes list of codes that indicate that a patient's race is Unknown
-#'                      defaults to standard OMOP vocabulary -- `44814660`, `44814650`, `44814653`
-#' @param other_codes list of codes that indicate that a patient's race is Unknown
-#'                    defaults to -- `44814649`, `8657`, `8557`
-#' @param hispanic_codes list of codes that indicate that a patient is Hispanic or Latino
-#'                       defaults to standard OMOP vocabulary -- `38003563`
-#' @param female_codes list of codes that inidicate that a patient is Female
-#'                     defaults to standard OMOP vocabulary -- `8532`
+#' @param demographic_mappings table defining how demographic elements should be defined; defaults
+#' to `ssc_pcornet_demographics`; any additional demographic elements must be found in the person_tbl
 #'
 #' @return one dataframe with one row for each patient with columns
 #'         to show which facts apply to each patient:
 #'
-#'         fu, age_cohort_entry, age_first_visit, black, white, asian,
-#'         mixed, unknown, hispanic, female
+#'         fu, age_cohort_entry, age_first_visit, and each of the demographic
+#'         elements found in demographic_mappings
 #'
 
 compute_demographic_summary_pcnt <- function(cohort_tbl,
                                             site_col,
                                             person_tbl = cdm_tbl('demographic'),
                                             visit_tbl = cdm_tbl('encounter'),
-                                            black_codes = c('03'),
-                                            white_codes = c('05'),
-                                            asian_codes = c('02'),
-                                            mixrace_codes = c('06'),
-                                            unknown_codes = c('NI', 'UN', '07'),
-                                            other_codes = c('OT', '01', '04'),
-                                            hispanic_codes = c('Y'),
-                                            female_codes = c('F')){
+                                            demographic_mappings = sensitivityselectioncriteria::ssc_pcornet_demographics
+                                            # black_codes = c('03'),
+                                            # white_codes = c('05'),
+                                            # asian_codes = c('02'),
+                                            # mixrace_codes = c('06'),
+                                            # unknown_codes = c('NI', 'UN', '07'),
+                                            # other_codes = c('OT', '01', '04'),
+                                            # hispanic_codes = c('Y'),
+                                            # female_codes = c('F')
+                                            ){
 
-  demographic <- cohort_tbl %>%
-    inner_join(person_tbl) %>%
-    mutate(age_cohort_entry = round((start_date - birth_date) / 365.25, 2),
-           black = case_when(race %in% black_codes ~ TRUE,
-                             TRUE ~ FALSE),
-           white = case_when(race %in% white_codes ~ TRUE,
-                             TRUE ~ FALSE),
-           asian = case_when(race %in% asian_codes ~ TRUE,
-                             TRUE ~ FALSE),
-           mixed_race = case_when(race %in% mixrace_codes ~ TRUE,
-                             TRUE ~ FALSE),
-           unknown_race = case_when(race %in% unknown_codes ~ TRUE,
-                               TRUE ~ FALSE),
-           other_race = case_when(race %in% other_codes ~ TRUE,
-                                  TRUE ~ FALSE),
-           hispanic = case_when(hispanic %in% hispanic_codes ~ TRUE,
-                                TRUE ~ FALSE),
-           female = case_when(sex %in% female_codes ~ TRUE,
-                              TRUE ~ FALSE)) %>%
-    select(!!sym(site_col), patid, start_date, end_date, fu, cohort_id, age_cohort_entry:female) %>%
-    collect()
+  demo_list <- split(demographic_mappings, seq(nrow(demographic_mappings)))
+  demo_rslt <- list()
+
+  for(i in 1:length(demo_list)){
+
+    vals <- demo_list[[i]]$field_values %>%
+      str_replace_all(" ", "") %>% str_split(',') %>% unlist()
+
+    demographic <- person_tbl %>%
+      inner_join(cohort_tbl) %>%
+      mutate(demo_col = ifelse(!!sym(demo_list[[i]]$concept_field) %in% vals, TRUE, FALSE)) %>%
+      select(!!sym(site_col), patid, start_date, end_date, fu, cohort_id, demo_col) %>%
+      rename(!!sym(demo_list[[i]]$demographic) := demo_col) %>%
+      collect()
+
+    demo_rslt[[i]] <- demographic
+
+  }
+
+  demo_final <- purrr::reduce(.x = demo_rslt,
+                              .f = left_join)
+
+  age_ced <- person_tbl %>%
+    inner_join(cohort_tbl) %>%
+    collect() %>%
+    mutate(age_cohort_entry = as.numeric(as.Date(start_date) - birth_date),
+           age_cohort_entry = round(age_cohort_entry / 365.25, 2)) %>%
+    distinct(!!sym(site_col), person_id, age_cohort_entry)
 
   age_first_visit <- person_tbl %>%
     inner_join(cohort_tbl) %>%
     inner_join(select(visit_tbl, patid, admit_date)) %>%
     group_by(!!sym(site_col), patid, cohort_id, birth_date) %>%
     summarise(min_visit = min(admit_date)) %>%
+    collect() %>%
     mutate(age_first_visit = round((min_visit - birth_date) / 365.25, 2)) %>%
-    select(-c(min_visit, birth_date)) %>%
-    collect()
+    select(-c(min_visit, birth_date)) #%>%
+    #collect()
 
-  summ_tbl <- demographic %>%
-    left_join(age_first_visit)
-
+  summ_tbl <- demo_final %>%
+    left_join(age_first_visit) %>%
+    left_join(age_ced)
 
 }
 

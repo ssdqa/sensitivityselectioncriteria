@@ -4,10 +4,13 @@
 \alias{compute_cohort_summaries}
 \title{Compute definition level summary}
 \usage{
-compute_cohort_summaries(cohort_def_output)
+compute_cohort_summaries(cohort_def_output, demographic_vector)
 }
 \arguments{
-\item{cohort_def_output}{the output of}
+\item{cohort_def_output}{the output of compare_cohort_def}
+
+\item{demographic_vector}{a vector of demographic categories provided in
+demographic_mappings; ensures all demographics are captured under the appropriate label}
 }
 \value{
 a dataframe with summary output for each cohort definition. for demographics and outcomes,

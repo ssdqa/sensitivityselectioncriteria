@@ -23,22 +23,10 @@
 #'                      only used if `specialty_concepts` are provided
 #'                      if provider_tbl & care_site_tbl are both not null, provider specialty is
 #'                      prioritized
-#' @param black_codes list of codes that indicate that a patient is Black/African-American
-#'                    defaults to standard OMOP vocabulary -- `8516`
-#' @param white_codes list of codes that indicate that a patient is White/Caucasian
-#'                    defaults to standard OMOP vocabulary -- `8527`
-#' @param asian_codes list of codes that indicate that a patient is Asian
-#'                    defaults to standard OMOP vocabulary -- `8515`
-#' @param mixrace_codes list of codes that indicate that a patient is Mixed Race
-#'                      defaults to standard OMOP vocabulary -- `44814659`
-#' @param unknown_codes list of codes that indicate that a patient's race is Unknown
-#'                      defaults to standard OMOP vocabulary -- `44814660`, `44814650`, `44814653`
-#' @param other_codes list of codes that indicate that a patient's race is Unknown
-#'                    defaults to -- `44814649`, `8657`, `8557`
-#' @param hispanic_codes list of codes that indicate that a patient is Hispanic or Latino
-#'                       defaults to standard OMOP vocabulary -- `38003563`
-#' @param female_codes list of codes that inidicate that a patient is Female
-#'                     defaults to standard OMOP vocabulary -- `8532`
+#' @param demographic_mappings table defining how demographic elements should be defined
+#'                             if NULL, the default demographic mappings for the CDM will be used
+#'                             (either `ssc_omop_demographics` or `ssc_pcornet_demographics`)
+#'                             otherwise, the user provided table will be used
 #' @param specialty_concepts a concept set with provider specialty concepts of interest
 #'                           to be used to identify specialty visits
 #' @param outcome_concepts a concept set with the following columns:
@@ -75,18 +63,20 @@ ssc_process <- function(base_cohort,
                          visit_tbl = cdm_tbl('visit_occurrence'),
                          provider_tbl = NULL,
                          care_site_tbl = NULL,
-                         black_codes = c('8516'),
-                         white_codes = c('8527'),
-                         asian_codes = c('8515'),
-                         mixrace_codes = c('44814659'),
-                         unknown_codes = c('44814660', '44814650', '44814653'),
-                         other_codes = c('44814649', '8657', '8557'),
-                         hispanic_codes = c('38003563'),
-                         female_codes = c('8532'),
+                         demographic_mappings = NULL,
+                         # black_codes = c('8516'),
+                         # white_codes = c('8527'),
+                         # asian_codes = c('8515'),
+                         # mixrace_codes = c('44814659'),
+                         # unknown_codes = c('44814660', '44814650', '44814653'),
+                         # other_codes = c('44814649', '8657', '8557'),
+                         # hispanic_codes = c('38003563'),
+                         # female_codes = c('8532'),
                          specialty_concepts = NULL,
                          outcome_concepts = NULL,
                          domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
-                         domain_select = domain_tbl %>% distinct(domain) %>% pull()){
+                         domain_select = sensitivityselectioncriteria::ssc_domain_file %>%
+                          distinct(domain) %>% pull()){
 
   ## Check proper arguments
   cli::cli_div(theme = list(span.code = list(color = 'blue'),
@@ -106,6 +96,8 @@ ssc_process <- function(base_cohort,
 
   if(tolower(omop_or_pcornet) == 'omop'){
 
+    if(is.null(demographic_mappings)){demographic_mappings <- sensitivityselectioncriteria::ssc_omop_demographics}
+
     ssc_rslt <- ssc_process_omop(base_cohort = base_cohort,
                                  alt_cohorts = alt_cohorts,
                                  multi_or_single_site = multi_or_single_site,
@@ -114,20 +106,22 @@ ssc_process <- function(base_cohort,
                                  visit_tbl = visit_tbl,
                                  provider_tbl = provider_tbl,
                                  care_site_tbl = care_site_tbl,
-                                 black_codes = black_codes,
-                                 white_codes = white_codes,
-                                 asian_codes = asian_codes,
-                                 mixrace_codes = mixrace_codes,
-                                 unknown_codes = unknown_codes,
-                                 other_codes = other_codes,
-                                 hispanic_codes = hispanic_codes,
-                                 female_codes = female_codes,
+                                 demographic_mappings = demographic_mappings,
+                                 # black_codes = black_codes,
+                                 # white_codes = white_codes,
+                                 # asian_codes = asian_codes,
+                                 # mixrace_codes = mixrace_codes,
+                                 # unknown_codes = unknown_codes,
+                                 # other_codes = other_codes,
+                                 # hispanic_codes = hispanic_codes,
+                                 # female_codes = female_codes,
                                  specialty_concepts = specialty_concepts,
                                  outcome_concepts = outcome_concepts,
                                  domain_tbl = domain_tbl,
                                  domain_select = domain_select)
 
   }else if(tolower(omop_or_pcornet) == 'pcornet'){
+    if(is.null(demographic_mappings)){demographic_mappings <- sensitivityselectioncriteria::ssc_pcornet_demographics}
 
     ssc_rslt <- ssc_process_pcornet(base_cohort = base_cohort,
                                     alt_cohorts = alt_cohorts,
@@ -137,14 +131,15 @@ ssc_process <- function(base_cohort,
                                     visit_tbl = visit_tbl,
                                     provider_tbl = provider_tbl,
                                     care_site_tbl = care_site_tbl,
-                                    black_codes = black_codes,
-                                    white_codes = white_codes,
-                                    asian_codes = asian_codes,
-                                    mixrace_codes = mixrace_codes,
-                                    unknown_codes = unknown_codes,
-                                    other_codes = other_codes,
-                                    hispanic_codes = hispanic_codes,
-                                    female_codes = female_codes,
+                                    demographic_mappings = demographic_mappings,
+                                    # black_codes = black_codes,
+                                    # white_codes = white_codes,
+                                    # asian_codes = asian_codes,
+                                    # mixrace_codes = mixrace_codes,
+                                    # unknown_codes = unknown_codes,
+                                    # other_codes = other_codes,
+                                    # hispanic_codes = hispanic_codes,
+                                    # female_codes = female_codes,
                                     specialty_concepts = specialty_concepts,
                                     outcome_concepts = outcome_concepts,
                                     domain_tbl = domain_tbl,

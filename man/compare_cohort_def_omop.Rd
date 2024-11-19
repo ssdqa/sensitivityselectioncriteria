@@ -12,19 +12,12 @@ compare_cohort_def_omop(
   visit_tbl = cdm_tbl("visit_occurrence"),
   provider_tbl = NULL,
   care_site_tbl = NULL,
-  black_codes = c("8516"),
-  white_codes = c("8527"),
-  asian_codes = c("8515"),
-  mixrace_codes = c("44814659"),
-  unknown_codes = c("44814660", "44814650", "44814653"),
-  other_codes = c("44814649", "8657", "8557"),
-  hispanic_codes = c("38003563"),
-  female_codes = c("8532"),
+  demographic_mappings = sensitivityselectioncriteria::ssc_omop_demographics,
   specialty_concepts = NULL,
   outcome_concepts = NULL,
   domain_defs = sensitivityselectioncriteria::ssc_domain_file,
-  domain_select = c("inpatient_visits", "outpatient_visits", "emergency_visits",
-    "other_visits", "all_px", "prescription_medications", "all_conds")
+  domain_select = sensitivityselectioncriteria::ssc_domain_file \%>\% distinct(domain)
+    \%>\% pull()
 )
 }
 \arguments{
@@ -51,29 +44,10 @@ only used if \code{specialty_concepts} are provided
 if provider_tbl & care_site_tbl are both not null, provider specialty is
 prioritized}
 
-\item{black_codes}{list of codes that indicate that a patient is Black/African-American
-defaults to standard OMOP vocabulary -- \code{8516}}
-
-\item{white_codes}{list of codes that indicate that a patient is White/Caucasian
-defaults to standard OMOP vocabulary -- \code{8527}}
-
-\item{asian_codes}{list of codes that indicate that a patient is Asian
-defaults to standard OMOP vocabulary -- \code{8515}}
-
-\item{mixrace_codes}{list of codes that indicate that a patient is Mixed Race
-defaults to standard OMOP vocabulary -- \code{44814659}}
-
-\item{unknown_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to standard OMOP vocabulary -- \code{44814660}, \code{44814650}, \code{44814653}}
-
-\item{other_codes}{list of codes that indicate that a patient's race is Unknown
-defaults to -- \code{44814649}, \code{8657}, \code{8557}}
-
-\item{hispanic_codes}{list of codes that indicate that a patient is Hispanic or Latino
-defaults to standard OMOP vocabulary -- \code{38003563}}
-
-\item{female_codes}{list of codes that inidicate that a patient is Female
-defaults to standard OMOP vocabulary -- \code{8532}}
+\item{demographic_mappings}{table defining how demographic elements should be defined
+if NULL, the default demographic mappings for the CDM will be used
+(\code{ssc_omop_demographics})
+otherwise, the user provided table will be used}
 
 \item{specialty_concepts}{a concept set with provider specialty concepts of interest
 to be used to identify specialty visits}

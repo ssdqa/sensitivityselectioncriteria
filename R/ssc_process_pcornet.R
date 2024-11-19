@@ -21,22 +21,10 @@
 #'                      only used if `specialty_concepts` are provided
 #'                      if provider_tbl & care_site_tbl are both not null, provider specialty is
 #'                      prioritized
-#' @param black_codes list of codes that indicate that a patient is Black/African-American
-#'                    defaults to standard PCORnet vocabulary -- `03`
-#' @param white_codes list of codes that indicate that a patient is White/Caucasian
-#'                    defaults to standard PCORnet vocabulary -- `05`
-#' @param asian_codes list of codes that indicate that a patient is Asian
-#'                    defaults to standard PCORnet vocabulary -- `02`
-#' @param mixrace_codes list of codes that indicate that a patient is Mixed Race
-#'                      defaults to standard PCORnet vocabulary -- `06`
-#' @param unknown_codes list of codes that indicate that a patient's race is Unknown
-#'                      defaults to standard PCORnet vocabulary -- `NI`, `UN`, `07`
-#' @param other_codes list of codes that indicate that a patient's race is Unknown
-#'                    defaults to -- `OT`, `01`, `04`
-#' @param hispanic_codes list of codes that indicate that a patient is Hispanic or Latino
-#'                       defaults to standard PCORnet vocabulary -- `Y`
-#' @param female_codes list of codes that inidicate that a patient is Female
-#'                     defaults to standard PCORnet vocabulary -- `F`
+#' @param demographic_mappings table defining how demographic elements should be defined
+#'                             if NULL, the default demographic mappings for the CDM will be used
+#'                             (`ssc_pcornet_demographics`)
+#'                             otherwise, the user provided table will be used
 #' @param specialty_concepts a concept set with provider specialty concepts of interest
 #'                           to be used to identify specialty visits
 #' @param outcome_concepts a concept set with the following columns:
@@ -65,19 +53,20 @@ ssc_process_pcornet <- function(base_cohort,
                                visit_tbl = cdm_tbl('encounter'),
                                provider_tbl = cdm_tbl('provider'),
                                care_site_tbl = cdm_tbl('encounter'),
-                               black_codes = c('03'),
-                               white_codes = c('05'),
-                               asian_codes = c('02'),
-                               mixrace_codes = c('06'),
-                               unknown_codes = c('NI', 'UN', '07'),
-                               other_codes = c('OT', '01', '04'),
-                               hispanic_codes = c('Y'),
-                               female_codes = c('F'),
+                               demographic_mappings = sensitivityselectioncriteria::ssc_pcornet_demographics,
+                               # black_codes = c('03'),
+                               # white_codes = c('05'),
+                               # asian_codes = c('02'),
+                               # mixrace_codes = c('06'),
+                               # unknown_codes = c('NI', 'UN', '07'),
+                               # other_codes = c('OT', '01', '04'),
+                               # hispanic_codes = c('Y'),
+                               # female_codes = c('F'),
                                specialty_concepts = NULL,
                                outcome_concepts = NULL,
                                domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
-                               domain_select = c('inpatient_visits', 'outpatient_visits', 'emergency_visits',
-                                                 'prescription_medications', 'diagnoses')){
+                               domain_select = sensitivityselectioncriteria::ssc_domain_file %>%
+                                 distinct(domain) %>% pull()){
 
   ## Generate patient level output
   pt_lv_chars <- compare_cohort_def_pcnt(base_cohort = base_cohort,
@@ -87,14 +76,15 @@ ssc_process_pcornet <- function(base_cohort,
                                          visit_tbl = visit_tbl,
                                          provider_tbl = provider_tbl,
                                          care_site_tbl = care_site_tbl,
-                                         black_codes = black_codes,
-                                         white_codes = white_codes,
-                                         asian_codes = asian_codes,
-                                         mixrace_codes = mixrace_codes,
-                                         unknown_codes = unknown_codes,
-                                         other_codes = other_codes,
-                                         hispanic_codes = hispanic_codes,
-                                         female_codes = female_codes,
+                                         demographic_mappings = demographic_mappings,
+                                         # black_codes = black_codes,
+                                         # white_codes = white_codes,
+                                         # asian_codes = asian_codes,
+                                         # mixrace_codes = mixrace_codes,
+                                         # unknown_codes = unknown_codes,
+                                         # other_codes = other_codes,
+                                         # hispanic_codes = hispanic_codes,
+                                         # female_codes = female_codes,
                                          specialty_concepts = specialty_concepts,
                                          outcome_concepts = outcome_concepts,
                                          domain_defs = domain_tbl,
@@ -106,11 +96,15 @@ ssc_process_pcornet <- function(base_cohort,
 
     if(anomaly_or_exploratory == 'exploratory'){
 
-      ssc_tbl <- compute_cohort_summaries(cohort_def_output = pt_lv_chars)
+      ssc_tbl <- compute_cohort_summaries(cohort_def_output = pt_lv_chars,
+                                          demographic_vector = demographic_mappings %>%
+                                            distinct(demographic) %>% pull())
 
     }else if(anomaly_or_exploratory == 'anomaly'){
 
-      ssc_tbl <- compare_cohort_smd(cohort_def_output = pt_lv_chars)
+      ssc_tbl <- compare_cohort_smd(cohort_def_output = pt_lv_chars,
+                                    demographic_vector = demographic_mappings %>%
+                                      distinct(demographic) %>% pull())
 
     }
 
