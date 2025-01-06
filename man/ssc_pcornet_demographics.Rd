@@ -7,7 +7,7 @@
 \format{
 \subsection{ssc_pcornet_demographics}{
 
-A data frame with 6 rows and 6 columns
+A data frame with 3 columns
 \describe{
 \item{demographic}{a string used to identify the demographic category}
 \item{concept_field}{the name of the field in the CDM demographic table containing the appropriate demographic information}

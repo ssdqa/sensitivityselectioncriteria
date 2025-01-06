@@ -55,14 +55,6 @@ compare_cohort_def_omop <- function(base_cohort,
                                    provider_tbl = NULL,
                                    care_site_tbl = NULL,
                                    demographic_mappings = sensitivityselectioncriteria::ssc_omop_demographics,
-                                   # black_codes = c('8516'),
-                                   # white_codes = c('8527'),
-                                   # asian_codes = c('8515'),
-                                   # mixrace_codes = c('44814659'),
-                                   # unknown_codes = c('44814660', '44814650', '44814653'),
-                                   # other_codes = c('44814649', '8657', '8557'),
-                                   # hispanic_codes = c('38003563'),
-                                   # female_codes = c('8532'),
                                    specialty_concepts = NULL,
                                    outcome_concepts = NULL,
                                    domain_defs = sensitivityselectioncriteria::ssc_domain_file,
@@ -201,14 +193,6 @@ compute_demographic_summary_omop <- function(cohort_tbl,
                                             person_tbl = cdm_tbl('person'),
                                             visit_tbl = cdm_tbl('visit_occurrence'),
                                             demographic_mappings = sensitivityselectioncriteria::ssc_omop_demographics
-                                            # black_codes = c('8516'),
-                                            # white_codes = c('8527'),
-                                            # asian_codes = c('8515'),
-                                            # mixrace_codes = c('44814659'),
-                                            # unknown_codes = c('44814660', '44814650', '44814653'),
-                                            # other_codes = c('44814649', '8657', '8557'),
-                                            # hispanic_codes = c('38003563'),
-                                            # female_codes = c('8532')
                                             ){
 
   demo_list <- split(demographic_mappings, seq(nrow(demographic_mappings)))
@@ -241,12 +225,16 @@ compute_demographic_summary_omop <- function(cohort_tbl,
            age_cohort_entry = round(age_cohort_entry / 365.25, 2)) %>%
     distinct(!!sym(site_col), person_id, age_cohort_entry)
 
+  if('visit_start_date' %in% colnames(visit_tbl)){date_col <- 'visit_start_date'}else{
+    date_col <- 'visit_detail_start_date'
+  }
+
   age_first_visit <- visit_tbl %>%
-    select(person_id, visit_start_date) %>%
+    select(person_id, !!sym(date_col)) %>%
     inner_join(cohort_tbl) %>%
     # inner_join(select(visit_tbl, person_id, visit_start_date)) %>%
     group_by(!!sym(site_col), person_id, cohort_id) %>%
-    summarise(min_visit = min(visit_start_date)) %>%
+    summarise(min_visit = min(!!sym(date_col))) %>%
     collect() %>%
     left_join(new_person) %>%
     mutate(age_first_visit = as.numeric(as.Date(min_visit) - birth_date),
@@ -295,18 +283,26 @@ find_specialty_visits_omop <- function(cohort,
 
   spec_db <- copy_to_new(df = specialty_concepts)
 
+  if('visit_detail_id' %in% colnames(visit_tbl)){
+    id_col <- 'visit_detail_id'
+    visit_name <- 'visit_detail'
+  }else{
+    id_col <- 'visit_occurrence'
+    visit_name <- 'visit_occurrence'
+  }
+
   if(is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
       inner_join(provider_tbl %>% select(provider_id, specialty_concept_id)) %>%
       inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, !!sym(id_col))
   }else if(!is.null(care_site_tbl) && is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
       inner_join(care_site_tbl %>% select(care_site_id, specialty_concept_id)) %>%
       inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, !!sym(id_col))
   }else if(!is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
       inner_join(cohort) %>%
@@ -317,14 +313,22 @@ find_specialty_visits_omop <- function(cohort,
       mutate(specialty_concept_id = ifelse(is.na(pv_spec), cs_spec, pv_spec)) %>%
       select(-c(cs_spec, pv_spec)) %>%
       inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
-      select(all_of(grouped_list), cohort_id, visit_occurrence_id)
+      select(all_of(grouped_list), cohort_id, !!sym(id_col))
   }
 
-  domain_tbl <- tibble('domain' = 'specialty_visits',
-                       'domain_tbl' = 'visit_occurrence',
-                       'concept_field' = 'visit_concept_id',
-                       'date_field' = 'visit_start_date',
-                       'filter_logic' = NA)
+  if(visit_name == 'visit_occurrence'){
+    domain_tbl <- tibble('domain' = 'specialty_visits',
+                         'domain_tbl' = 'visit_occurrence',
+                         'concept_field' = 'visit_concept_id',
+                         'date_field' = 'visit_start_date',
+                         'filter_logic' = NA)
+  }else{
+    domain_tbl <- tibble('domain' = 'specialty_visits',
+                         'domain_tbl' = 'visit_detail',
+                         'concept_field' = 'visit_detail_concept_id',
+                         'date_field' = 'visit_detail_start_date',
+                         'filter_logic' = NA)
+  }
 
   spec_visit_ppy <- compute_domains_ssc(cohort = spec_visits,
                                         site_col = site_col,

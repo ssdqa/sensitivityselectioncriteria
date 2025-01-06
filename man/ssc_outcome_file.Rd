@@ -7,7 +7,7 @@
 \format{
 \subsection{ssc_outcome_file}{
 
-A data frame with 6 rows and 6 columns
+A data frame with 6 columns
 \describe{
 \item{concept_id}{The OMOP concept_id; if the PCORnet CDM is being used, default this column to a random integer like the row number}
 \item{concept_code}{The original code associated with the concept_id}

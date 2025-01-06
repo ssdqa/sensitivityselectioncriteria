@@ -7,7 +7,7 @@
 \format{
 \subsection{ssc_omop_demographics}{
 
-A data frame with 6 rows and 6 columns
+A data frame with 3 columns
 \describe{
 \item{demographic}{a string used to identify the demographic category}
 \item{concept_field}{the name of the field in the CDM person table containing the appropriate demographic information}

@@ -1,5 +1,5 @@
 
-#' Sensitivity to Selection Criteria -- OMOP
+#' Sensitivity to Selection Criteria
 #'
 #' @param base_cohort a dataframe including all patients who meet the base cohort definition
 #'                    should have the columns site | person_id | start_date | end_date
@@ -64,14 +64,6 @@ ssc_process <- function(base_cohort,
                          provider_tbl = NULL,
                          care_site_tbl = NULL,
                          demographic_mappings = NULL,
-                         # black_codes = c('8516'),
-                         # white_codes = c('8527'),
-                         # asian_codes = c('8515'),
-                         # mixrace_codes = c('44814659'),
-                         # unknown_codes = c('44814660', '44814650', '44814653'),
-                         # other_codes = c('44814649', '8657', '8557'),
-                         # hispanic_codes = c('38003563'),
-                         # female_codes = c('8532'),
                          specialty_concepts = NULL,
                          outcome_concepts = NULL,
                          domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
@@ -107,14 +99,6 @@ ssc_process <- function(base_cohort,
                                  provider_tbl = provider_tbl,
                                  care_site_tbl = care_site_tbl,
                                  demographic_mappings = demographic_mappings,
-                                 # black_codes = black_codes,
-                                 # white_codes = white_codes,
-                                 # asian_codes = asian_codes,
-                                 # mixrace_codes = mixrace_codes,
-                                 # unknown_codes = unknown_codes,
-                                 # other_codes = other_codes,
-                                 # hispanic_codes = hispanic_codes,
-                                 # female_codes = female_codes,
                                  specialty_concepts = specialty_concepts,
                                  outcome_concepts = outcome_concepts,
                                  domain_tbl = domain_tbl,
@@ -132,14 +116,6 @@ ssc_process <- function(base_cohort,
                                     provider_tbl = provider_tbl,
                                     care_site_tbl = care_site_tbl,
                                     demographic_mappings = demographic_mappings,
-                                    # black_codes = black_codes,
-                                    # white_codes = white_codes,
-                                    # asian_codes = asian_codes,
-                                    # mixrace_codes = mixrace_codes,
-                                    # unknown_codes = unknown_codes,
-                                    # other_codes = other_codes,
-                                    # hispanic_codes = hispanic_codes,
-                                    # female_codes = female_codes,
                                     specialty_concepts = specialty_concepts,
                                     outcome_concepts = outcome_concepts,
                                     domain_tbl = domain_tbl,
@@ -149,7 +125,7 @@ ssc_process <- function(base_cohort,
 
 
   cli::cli_inform(paste0(col_green('Based on your chosen parameters, we recommend using the following
-                       output function in ssc_output: '), col_blue(style_bold(output_type,'nt.'))))
+                       output function in ssc_output: '), col_blue(style_bold(output_type,'cs.'))))
 
   return(ssc_rslt)
 

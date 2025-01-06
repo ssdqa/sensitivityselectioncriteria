@@ -7,7 +7,7 @@
 #'
 #' #' @format ## ssc_domain_file
 #' \describe{
-#' A data frame with 2 rows and 5 columns
+#' A data frame with 5 columns
 #'   \item{domain}{An arbitrary string to label the domain of interest}
 #'   \item{domain_tbl}{The name of the CDM table associated with the domain of interest}
 #'   \item{concept_field}{The name of the column in the domain table that contains the concepts of interest listed in the concept_set file.}
@@ -25,7 +25,7 @@
 #' file and include their own clinical concepts.
 #'
 #' @format ## ssc_outcome_file
-#' A data frame with 6 rows and 6 columns
+#' A data frame with 6 columns
 #' \describe{
 #'   \item{concept_id}{The OMOP concept_id; if the PCORnet CDM is being used, default this column to a random integer like the row number}
 #'   \item{concept_code}{The original code associated with the concept_id}
@@ -47,7 +47,7 @@
 #' in place of custom mappings.
 #'
 #' @format ## ssc_omop_demographics
-#' A data frame with 6 rows and 6 columns
+#' A data frame with 3 columns
 #' \describe{
 #'   \item{demographic}{a string used to identify the demographic category}
 #'   \item{concept_field}{the name of the field in the CDM person table containing the appropriate demographic information}
@@ -66,7 +66,7 @@
 #' in place of custom mappings.
 #'
 #' @format ## ssc_pcornet_demographics
-#' A data frame with 6 rows and 6 columns
+#' A data frame with 3 columns
 #' \describe{
 #'   \item{demographic}{a string used to identify the demographic category}
 #'   \item{concept_field}{the name of the field in the CDM demographic table containing the appropriate demographic information}

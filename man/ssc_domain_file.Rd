@@ -18,7 +18,7 @@ this file and include their own domain definitions.
 \details{
 #' @format ## ssc_domain_file
 \describe{
-A data frame with 2 rows and 5 columns
+A data frame with 5 columns
 \item{domain}{An arbitrary string to label the domain of interest}
 \item{domain_tbl}{The name of the CDM table associated with the domain of interest}
 \item{concept_field}{The name of the column in the domain table that contains the concepts of interest listed in the concept_set file.}

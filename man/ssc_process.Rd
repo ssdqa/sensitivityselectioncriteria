@@ -2,7 +2,7 @@
 % Please edit documentation in R/ssc_process.R
 \name{ssc_process}
 \alias{ssc_process}
-\title{Sensitivity to Selection Criteria -- OMOP}
+\title{Sensitivity to Selection Criteria}
 \usage{
 ssc_process(
   base_cohort,
@@ -87,5 +87,5 @@ between the base cohort and each alternate cohort definition is computed for eac
 of the variables of interest
 }
 \description{
-Sensitivity to Selection Criteria -- OMOP
+Sensitivity to Selection Criteria
 }

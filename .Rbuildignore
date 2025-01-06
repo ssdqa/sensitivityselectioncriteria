@@ -3,3 +3,4 @@
 ^data-raw$
 ^LICENSE.txt
 ^.github
+^cran-comments\.md$

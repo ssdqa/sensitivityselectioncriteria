@@ -1,13 +1,25 @@
 Package: sensitivityselectioncriteria
-Title: Sensitivity to Selection Criteria
+Title: Evaluate Impact of Cohort Inclusion Criteria on Cohort Characterization
 Version: 0.0.0.9000
 Authors@R: 
-    person("Kaleigh", "Wieand", , "wieandk@chop.edu", role = c("aut", "cre"))
-Description: This package represents one of several modules in the broader SSDQA ecosystem. The Sensitivity to Selection Criteria module compares the demographic and fact presences makeup of a base cohort to alternative cohort definitions.
+      c(person("Hanieh", "Razzaghi", email = "razzaghih@chop.edu", role = c("aut"),
+             comment = c(ORCID = "0000-0001-5001-1590")),
+      person("Kaleigh", "Wieand", email = "wieandk@chop.edu", role = c("aut", "cre"),
+             comment = c(ORCID = "0009-0003-7477-2601")),
+      person("Kimberley", "Dickinson", email = "dickinsokl@chop.edu", role = c("aut"),
+             comment = c(ORCID = "0000-0001-9523-056X")),
+      person("Charles", "Bailey", email = "baileyc@chop.edu", role = c("aut"),
+             comment = c(ORCID = "0000-0002-8967-0662")))
+Description: The Sensitivity to Selection Criteria module, part of the larger SSDQA ecosystem, measures how different
+    cohort inclusion definitions can impact the makeup of a cohort, including demographics, utilization, and outcomes.
+    Each check will compare a user-provided base cohort definition to each provided alternate cohort defintion to 
+    evaluate how the new definitions impact each measured characteristic. 
 License: MPL-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
+URL: https://github.com/ssdqa/sensitivityselectioncriteria, https://pedsnetapps.chop.edu/metadata/handle/20.500.14642/37
+BugReports: https://github.com/ssdqa/sensitivityselectioncriteria/issues
 Imports: 
     cli (>= 3.6.3),
     dplyr (>= 1.1.4),

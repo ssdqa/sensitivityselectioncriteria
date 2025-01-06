@@ -12,7 +12,7 @@
 NULL
 
 
-#' *Single Site, Exploratory, No Time*
+#' *Single Site, Exploratory, Cross-Sectional*
 #'
 #' @param summary_output the summary dataframe output by ssc_process
 #' @param cohort_overlap the cohort overlap dataframe output by ssc_process
@@ -23,7 +23,7 @@ NULL
 #' @return an UpSet graph illustrating the overlap in patients between the two cohorts
 #'         a bar graph showing the difference between each alternate cohort and the base cohort
 #'
-ssc_ss_exp_nt <- function(summary_output,
+ssc_ss_exp_cs <- function(summary_output,
                           cohort_overlap,
                           alt_cohort_filter){
 
@@ -95,14 +95,14 @@ ssc_ss_exp_nt <- function(summary_output,
 
 
 
-#' *Single Site, Anomaly Detection, No Time*
+#' *Single Site, Anomaly Detection, Cross-Sectional*
 #'
 #' @param process_output the output from ssc_process
 #'
 #' @return a heat map displaying the standardized mean difference between
 #'         the base cohort and each of the alternate cohorts
 #'
-ssc_ss_anom_nt <- function(process_output){
+ssc_ss_anom_cs <- function(process_output){
 
 
   dat_to_plot <- process_output %>%
@@ -142,7 +142,7 @@ ssc_ss_anom_nt <- function(process_output){
 
 
 
-#' *Multi-Site, Exploratory, No Time*
+#' *Multi-Site, Exploratory, Cross-Sectional*
 #'
 #' @param process_output the output from ssc_process
 #' @param alt_cohort_filter an vector indicating which alternate cohorts should be
@@ -154,7 +154,7 @@ ssc_ss_anom_nt <- function(process_output){
 #' if two alternate cohort definitions are provided, the base cohort is placed in the middle
 #' of the plot. Otherwise, the base is on the left.
 #'
-ssc_ms_exp_nt <- function(process_output,
+ssc_ms_exp_cs <- function(process_output,
                           alt_cohort_filter){
 
   if(length(alt_cohort_filter) > 2){
@@ -265,7 +265,7 @@ ssc_ms_exp_nt <- function(process_output,
 
 
 
-#' *Multi-Site, Anomaly Detection, No Time*
+#' *Multi-Site, Anomaly Detection, Cross-Sectional*
 #'
 #' @param process_output the output of ssc_process
 #'
@@ -274,7 +274,7 @@ ssc_ms_exp_nt <- function(process_output,
 #'         a dot plot showing the standardized mean difference value vs baseline for
 #'           each site & alternative cohort definition
 #'
-ssc_ms_anom_nt <- function(process_output){
+ssc_ms_anom_cs <- function(process_output){
 
   tbl_sum <- process_output %>%
     group_by(cohort_id, site) %>%
