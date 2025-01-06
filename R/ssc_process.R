@@ -46,6 +46,8 @@
 #'         between the base cohort and each alternate cohort definition is computed for each
 #'         of the variables of interest
 #'
+#' @example inst/example-ssc_process_output.R
+#'
 #' @export
 #'
 #' @import ssdqa.gen

@@ -12,6 +12,8 @@
 #' @return a graph visualizing the differences between the alternate cohort definitions and
 #'         the base cohort; see documentation for each output function for specifics
 #'
+#' @example inst/example-ssc_process_output.R
+#'
 #' @export
 #'
 ssc_output <- function(process_output,
