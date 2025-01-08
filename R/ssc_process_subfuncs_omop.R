@@ -287,7 +287,7 @@ find_specialty_visits_omop <- function(cohort,
     id_col <- 'visit_detail_id'
     visit_name <- 'visit_detail'
   }else{
-    id_col <- 'visit_occurrence'
+    id_col <- 'visit_occurrence_id'
     visit_name <- 'visit_occurrence'
   }
 
