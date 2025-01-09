@@ -196,7 +196,8 @@ compute_cohort_summaries <- function(cohort_def_output,
 
   ## Find overlap between cohorts
   cht_overlap <- cohort_def_output %>%
-    select(site, !!sym(person_col), cohort_id) %>%
+    ungroup() %>%
+    distinct(site, !!sym(person_col), cohort_id) %>%
     pivot_wider(names_from = cohort_id,
                 values_from = cohort_id) %>%
     relocate(base_cohort, .after = !!sym(person_col)) %>%
