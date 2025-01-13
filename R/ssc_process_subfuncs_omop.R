@@ -103,7 +103,8 @@ compare_cohort_def_omop <- function(base_cohort,
   grouped_list <- site_filter$grouped_list
   site_col <- site_filter$grouped_list
 
-  cohort_prep <- prepare_cohort(copy_to_new(df = cohort_filter)) #%>% copy_to_new(df = .)
+  cohort_prep <- prepare_cohort(copy_to_new(df = cohort_filter),
+                                omop_or_pcornet = 'omop') #%>% copy_to_new(df = .)
 
 
   fact_list <- list()

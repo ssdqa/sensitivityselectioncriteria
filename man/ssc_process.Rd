@@ -91,8 +91,7 @@ This is a plausibility module that will characterize user-provided base cohort
 and alternate cohort definitions using a selection of continuous and categorical
 variables. It will then use these values to compare each alternate definition to
 the base cohort and evaluate how changes in the cohort definition impact the
-patient population. This module is compatible with both the OMOP and the PCORnet
-CDMs. Users have the option to provide definitions for several
+patient population. Users have the option to provide definitions for several
 variable types:
 \itemize{
 \item \code{demographic_mappings}: define a set of demographic variables of interest
@@ -101,6 +100,9 @@ variable types:
 \item \code{specialty_concepts}: define a set of specialty concepts to evaluate specialty
 care sought out by the cohort members
 \item \code{outcome_concepts}: define study outcome variables
+Sample versions of these input files are available with \verb{sensitivityselectioncriteria::}.
+This module is compatible with both the OMOP and PCORnet CDMs based on the user's
+selection.
 }
 }
 \examples{
