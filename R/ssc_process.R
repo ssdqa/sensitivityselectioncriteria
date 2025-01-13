@@ -1,6 +1,20 @@
 
 #' Sensitivity to Selection Criteria
 #'
+#' This is a plausibility module that will characterize user-provided base cohort
+#' and alternate cohort definitions using a selection of continuous and categorical
+#' variables. It will then use these values to compare each alternate definition to
+#' the base cohort and evaluate how changes in the cohort definition impact the
+#' patient population. This module is compatible with both the OMOP and the PCORnet
+#' CDMs. Users have the option to provide definitions for several
+#' variable types:
+#' - `demographic_mappings`: define a set of demographic variables of interest
+#' - `domain_tbl`: define domain definitions to assess patient fact density + utilization
+#' (similar to Patient Facts module)
+#' - `specialty_concepts`: define a set of specialty concepts to evaluate specialty
+#' care sought out by the cohort members
+#' - `outcome_concepts`: define study outcome variables
+#'
 #' @param base_cohort a dataframe including all patients who meet the base cohort definition
 #'                    should have the columns site | person_id | start_date | end_date
 #' @param alt_cohorts a list or named list of dataframes with patients meeting alternative
