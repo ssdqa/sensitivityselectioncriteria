@@ -5,8 +5,7 @@
 #' and alternate cohort definitions using a selection of continuous and categorical
 #' variables. It will then use these values to compare each alternate definition to
 #' the base cohort and evaluate how changes in the cohort definition impact the
-#' patient population. This module is compatible with both the OMOP and the PCORnet
-#' CDMs. Users have the option to provide definitions for several
+#' patient population. Users have the option to provide definitions for several
 #' variable types:
 #' - `demographic_mappings`: define a set of demographic variables of interest
 #' - `domain_tbl`: define domain definitions to assess patient fact density + utilization
@@ -14,6 +13,9 @@
 #' - `specialty_concepts`: define a set of specialty concepts to evaluate specialty
 #' care sought out by the cohort members
 #' - `outcome_concepts`: define study outcome variables
+#' Sample versions of these input files are available with `sensitivityselectioncriteria::`.
+#' This module is compatible with both the OMOP and PCORnet CDMs based on the user's
+#' selection.
 #'
 #' @param base_cohort a dataframe including all patients who meet the base cohort definition
 #'                    should have the columns site | person_id | start_date | end_date
