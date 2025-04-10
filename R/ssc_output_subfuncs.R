@@ -38,10 +38,10 @@ ssc_ss_exp_cs <- function(summary_output,
 
   ug <- upset(fromExpression(upset_prep),
               empty.intersections = TRUE,
-              main.bar.color = ssdqa_colors_standard[8],
-              sets.bar.color = ssdqa_colors_standard[6],
+              main.bar.color = squba_colors_standard[8],
+              sets.bar.color = squba_colors_standard[6],
               text.scale = 1.7,
-              matrix.color = ssdqa_colors_standard[6])
+              matrix.color = squba_colors_standard[6])
 
 
   bc_cts <- summary_output %>%
@@ -77,7 +77,7 @@ ssc_ss_exp_cs <- function(summary_output,
                size = 3) +
     facet_wrap(~val_type, scales = 'free') +
     theme_minimal() +
-    scale_fill_ssdqa() +
+    scale_fill_squba() +
     labs(x = 'Difference from Base Cohort',
          y = 'Cohort Characteristic',
          fill = 'Alternate Cohort',
@@ -122,7 +122,7 @@ ssc_ss_anom_cs <- function(process_output){
                scales = 'free_y',switch = 'y', space = 'free_y',
                labeller = label_wrap_gen()) +
     theme_minimal() +
-    scale_fill_ssdqa(palette = 'diverging', discrete = FALSE) +
+    scale_fill_squba(palette = 'diverging', discrete = FALSE) +
     scale_y_discrete(expand = c(0,0)) +
     theme(panel.spacing = unit(0, 'lines'),
           strip.background = element_rect(),
@@ -218,7 +218,7 @@ ssc_ms_exp_cs <- function(process_output,
     scale_shape_manual(values = shape_vec) +
     facet_wrap(~cf, scales = 'free_y',
                labeller = label_wrap_gen(width = 15)) +
-    scale_color_ssdqa() +
+    scale_color_squba() +
     theme_minimal() +
     theme(strip.background = element_rect(),
           panel.border = element_rect(fill = NA)) +
@@ -241,7 +241,7 @@ ssc_ms_exp_cs <- function(process_output,
     scale_shape_manual(values = shape_vec) +
     facet_wrap(~cf, scales = 'free_y',
                labeller = label_wrap_gen(width = 15)) +
-    scale_color_ssdqa() +
+    scale_color_squba() +
     theme_minimal() +
     theme(strip.background = element_rect(),
           panel.border = element_rect(fill = NA)) +
@@ -342,7 +342,7 @@ ssc_ms_anom_cs <- function(process_output){
                labeller = label_wrap_gen()) +
     geom_vline(xintercept = 0, linetype = 'dotted', alpha = 0.5) +
     theme_minimal() +
-    scale_color_ssdqa() +
+    scale_color_squba() +
     scale_y_discrete(expand = c(0.1,0.1)) +
     theme(#axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
           panel.spacing = unit(0, 'lines'),

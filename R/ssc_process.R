@@ -66,7 +66,7 @@
 #'
 #' @export
 #'
-#' @import ssdqa.gen
+#' @import squba.gen
 #' @import argos
 #' @import dplyr
 #' @import cli

@@ -10,7 +10,7 @@ Authors@R:
              comment = c(ORCID = "0000-0001-9523-056X")),
       person("Charles", "Bailey", email = "baileyc@chop.edu", role = c("aut"),
              comment = c(ORCID = "0000-0002-8967-0662")))
-Description: The Sensitivity to Selection Criteria module, part of the larger SSDQA ecosystem, measures how different
+Description: The Sensitivity to Selection Criteria module, part of the larger SQUBA ecosystem, measures how different
     cohort inclusion definitions can impact the makeup of a cohort, including demographics, utilization, and outcomes.
     Each check will compare a user-provided base cohort definition to each provided alternate cohort defintion to 
     evaluate how the new definitions impact each measured characteristic. 
@@ -39,9 +39,9 @@ Imports:
 Depends: 
     argos,
     R (>= 2.10),
-    ssdqa.gen
+    squba.gen
 LazyData: true
-Remotes: PEDSnet/argos, ssdqa/ssdqa.gen
+Remotes: PEDSnet/argos, ssdqa/squba.gen
 Suggests: 
     DBI (>= 1.1.3),
     readr,

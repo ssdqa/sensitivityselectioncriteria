@@ -64,6 +64,6 @@ ssc_output_example <- ssc_output(process_output = ssc_process_example,
 ssc_output_example
 
 #' Easily convert the graph into an interactive ggiraph or plotly object with
-#' `make_interactive_ssdqa()`
+#' `make_interactive_squba()`
 
-make_interactive_ssdqa(ssc_output_example[[2]])
+make_interactive_squba(ssc_output_example[[2]])
