@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for using the SSDQA ecosystem! Please complete this form to submit a bug report for the Sensitivity to Selection Criteria module.
+        Thanks for using the SQUBA ecosystem! Please complete this form to submit a bug report for the Sensitivity to Selection Criteria module.
   - type: checkboxes
     attributes:
       label: Function
