@@ -58,7 +58,6 @@ ssc_process_example
 
 #' Execute `ssc_output` function
 ssc_output_example <- ssc_output(process_output = ssc_process_example,
-                                 output_function = 'ssc_ss_exp_cs',
                                  alt_cohort_filter = 'Sample Alternate')
 
 ssc_output_example

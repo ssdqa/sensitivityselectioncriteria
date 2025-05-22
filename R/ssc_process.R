@@ -17,41 +17,45 @@
 #' This module is compatible with both the OMOP and PCORnet CDMs based on the user's
 #' selection.
 #'
-#' @param base_cohort a dataframe including all patients who meet the base cohort definition
+#' @param base_cohort *tabular input* | a dataframe including all patients who meet the base cohort definition
 #'                    should have the columns site | person_id | start_date | end_date
-#' @param alt_cohorts a list or named list of dataframes with patients meeting alternative
+#' @param alt_cohorts *list of tabular inputs* | a list (can be named or unnamed) of dataframes with patients meeting alternative
 #'                    cohort definitions; if names are not provided, numbers will be assigned to each
 #'                    cohort definition for labelling purposes
-#' @param omop_or_pcornet Option to run the function using the OMOP or PCORnet CDM as the default CDM
+#' @param omop_or_pcornet *string* | Option to run the function using the OMOP or PCORnet CDM as the default CDM
 #' - `omop`: run the [ssc_process_omop()] function against an OMOP CDM instance
 #' - `pcornet`: run the [ssc_process_pcornet()] function against a PCORnet CDM instance
-#' @param multi_or_single_site direction to determine what kind of check to run
+#' @param multi_or_single_site *string* | direction to determine what kind of check to run
 #'                             string that is either `multi` or `single`
-#' @param anomaly_or_exploratory direction to determine what kind of check to run; a string
+#' @param anomaly_or_exploratory *string* | direction to determine what kind of check to run; a string
 #'                               that is either `anomaly` or `exploratory`
-#' @param person_tbl CDM `person` table
-#' @param visit_tbl CDM `visit_occurrence` table
-#' @param provider_tbl the CDM table with provider & provider specialty information
+#' @param person_tbl *tabular input* | CDM `person` or `demographic` table
+#' @param visit_tbl *tabular input* | CDM `visit_occurrence`, `visit_detail`, or `encounter` table
+#' @param provider_tbl *tabular input* | the CDM table with provider & provider specialty information
 #'                     only used if `specialty_concepts` are provided
 #'                     if provider_tbl & care_site_tbl are both not null, provider specialty is
 #'                     prioritized
-#' @param care_site_tbl the CDM table with care site / facility & care site / facility specialty information
+#' @param care_site_tbl *tabular input* | the CDM table with care site / facility & care site / facility specialty information
 #'                      only used if `specialty_concepts` are provided
 #'                      if provider_tbl & care_site_tbl are both not null, provider specialty is
 #'                      prioritized
-#' @param demographic_mappings table defining how demographic elements should be defined
+#' @param demographic_mappings *tabular input* | table defining how demographic elements should be defined
 #'                             if NULL, the default demographic mappings for the CDM will be used
 #'                             (either `ssc_omop_demographics` or `ssc_pcornet_demographics`)
 #'                             otherwise, the user provided table will be used
-#' @param specialty_concepts a concept set with provider specialty concepts of interest
+#' @param specialty_concepts *tabular input* | a concept set with provider specialty concepts of interest
 #'                           to be used to identify specialty visits
-#' @param outcome_concepts a concept set with the following columns:
-#'                         `concept_id` | `concept_code` | `concept_name` | `vocabulary_id` | `variable` | `domain`
-#'
-#'                         where domain matches a domain listed in the `domain_defs` table
-#' @param domain_tbl a table with domain definitions with the following columns:
+#' @param outcome_concepts *tabular input* | a concept set with the following columns:
+#' - `concept_id` | *integer* | required for OMOP; the concept_id of interest
+#' - `concept_code` | *character* | required for PCORnet; the code of interest
+#' - `concept_name` | *character* | optional; the descriptive name of the concept
+#' - `vocabulary_id` | *character* | required for PCORnet; the vocabulary of the code - should match what is listed in the domain table's vocabulary_field
+#' - `variable` | *character* | required; a string label grouping one concept code into a larger variable definition
+#' - `domain` | *character* | the CDM table (matching a domain listed in the `domain_defs` table) where the
+#' outcome should be identified
+#' @param domain_tbl *tabular input* | a table with domain definitions with the following columns:
 #'                   domain, domain_tbl, concept_field, date_field, filter_logic
-#' @param domain_select a vector of domain names that should be used in the computation
+#' @param domain_select *string or vector* | a vector of domain names that should be used in the computation
 #'                      of facts per domain per year of follow up
 #'
 #'                      this vector does NOT need to include domains used in the computation for
@@ -73,20 +77,20 @@
 #' @importFrom stringr str_wrap
 #'
 ssc_process <- function(base_cohort,
-                         alt_cohorts,
-                         omop_or_pcornet,
-                         multi_or_single_site = 'single',
-                         anomaly_or_exploratory = 'exploratory',
-                         person_tbl = cdm_tbl('person'),
-                         visit_tbl = cdm_tbl('visit_occurrence'),
-                         provider_tbl = NULL,
-                         care_site_tbl = NULL,
-                         demographic_mappings = NULL,
-                         specialty_concepts = NULL,
-                         outcome_concepts = NULL,
-                         domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
-                         domain_select = sensitivityselectioncriteria::ssc_domain_file %>%
-                          distinct(domain) %>% pull()){
+                        alt_cohorts,
+                        omop_or_pcornet,
+                        multi_or_single_site = 'single',
+                        anomaly_or_exploratory = 'exploratory',
+                        person_tbl = cdm_tbl('person'),
+                        visit_tbl = cdm_tbl('visit_occurrence'),
+                        provider_tbl = NULL,
+                        care_site_tbl = NULL,
+                        demographic_mappings = NULL,
+                        specialty_concepts = NULL,
+                        outcome_concepts = NULL,
+                        domain_tbl = sensitivityselectioncriteria::ssc_domain_file,
+                        domain_select = sensitivityselectioncriteria::ssc_domain_file %>%
+                         distinct(domain) %>% pull()){
 
   ## Check proper arguments
   cli::cli_div(theme = list(span.code = list(color = 'blue'),
@@ -142,8 +146,16 @@ ssc_process <- function(base_cohort,
   }else{cli::cli_abort('Invalid argument for {.code omop_or_pcornet}: this function is only compatible with {.code omop} or {.code pcornet}')}
 
 
-  cli::cli_inform(paste0(col_green('Based on your chosen parameters, we recommend using the following
-                       output function in ssc_output: '), col_blue(style_bold(output_type,'cs.'))))
+  cli::boxx(c('You can optionally use this dataframe in the accompanying',
+              '`ssc_output` function. Here are the parameters you will need:', '', output_type$vector, '',
+              'See ?ssc_output for more details.'), padding = c(0,1,0,1),
+            header = cli::col_cyan('Output Function Details'))
+
+  if(anomaly_or_exploratory == 'exploratory'){
+    ssc_rslt[[1]] <- ssc_rslt[[1]] %>% mutate(output_function = paste0(output_type$string, 'cs'))
+  }else{
+    ssc_rslt <- ssc_rslt %>% mutate(output_function = paste0(output_type$string, 'cs'))
+  }
 
   return(ssc_rslt)
 
