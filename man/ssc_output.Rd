@@ -4,15 +4,12 @@
 \alias{ssc_output}
 \title{Sensitivity to Selection Criteria -- Output Generation}
 \usage{
-ssc_output(process_output, output_function, alt_cohort_filter = NULL)
+ssc_output(process_output, alt_cohort_filter = NULL)
 }
 \arguments{
-\item{process_output}{the output from \code{ssc_process}}
+\item{process_output}{\emph{tabular input} | the output from \code{ssc_process}}
 
-\item{output_function}{the name of the output function to be executed; this is provided in the message
-printed to the console after \code{ssc_process} is finished running}
-
-\item{alt_cohort_filter}{single site exploratory no time only -- a vector with the names of
+\item{alt_cohort_filter}{\emph{string or vector} | required for exploratory output; a vector with the names of
 alternate cohorts to display on the graph; this should be limited
 to 3 or less to maintain good visibility on the graph}
 }
@@ -87,8 +84,7 @@ ssc_process_example
 
 #' Execute `ssc_output` function
 ssc_output_example <- ssc_output(process_output = ssc_process_example,
-                                 output_function = 'ssc_ss_exp_cs',
-                                 alt_cohort_filter = 'alt_cohort_Sample Alternate')
+                                 alt_cohort_filter = 'Sample Alternate')
 
 ssc_output_example
 

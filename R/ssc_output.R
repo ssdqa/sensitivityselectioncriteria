@@ -7,10 +7,8 @@
 #' be adjusted by the user after the graph has been output using `+ theme()`. Most graphs can
 #' also be made interactive using `make_interactive_squba()`
 #'
-#' @param process_output the output from `ssc_process`
-#' @param output_function the name of the output function to be executed; this is provided in the message
-#'                        printed to the console after `ssc_process` is finished running
-#' @param alt_cohort_filter single site exploratory no time only -- a vector with the names of
+#' @param process_output *tabular input* | the output from `ssc_process`
+#' @param alt_cohort_filter *string or vector* | required for exploratory output; a vector with the names of
 #'                          alternate cohorts to display on the graph; this should be limited
 #'                          to 3 or less to maintain good visibility on the graph
 #'
@@ -22,8 +20,14 @@
 #' @export
 #'
 ssc_output <- function(process_output,
-                       output_function,
                        alt_cohort_filter = NULL){
+
+  # extract output function
+  if('list' %in% class(process_output)){
+    output_function <- process_output[[1]] %>% collect() %>% ungroup() %>% distinct(output_function) %>% pull()
+  }else{
+    output_function <- process_output %>% collect() %>% ungroup() %>% distinct(output_function) %>% pull()
+  }
 
   if(output_function == 'ssc_ss_exp_cs'){
 

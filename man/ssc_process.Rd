@@ -23,57 +23,62 @@ ssc_process(
 )
 }
 \arguments{
-\item{base_cohort}{a dataframe including all patients who meet the base cohort definition
+\item{base_cohort}{\emph{tabular input} | a dataframe including all patients who meet the base cohort definition
 should have the columns site | person_id | start_date | end_date}
 
-\item{alt_cohorts}{a list or named list of dataframes with patients meeting alternative
+\item{alt_cohorts}{\emph{list of tabular inputs} | a list (can be named or unnamed) of dataframes with patients meeting alternative
 cohort definitions; if names are not provided, numbers will be assigned to each
 cohort definition for labelling purposes}
 
-\item{omop_or_pcornet}{Option to run the function using the OMOP or PCORnet CDM as the default CDM
+\item{omop_or_pcornet}{\emph{string} | Option to run the function using the OMOP or PCORnet CDM as the default CDM
 \itemize{
 \item \code{omop}: run the \code{\link[=ssc_process_omop]{ssc_process_omop()}} function against an OMOP CDM instance
 \item \code{pcornet}: run the \code{\link[=ssc_process_pcornet]{ssc_process_pcornet()}} function against a PCORnet CDM instance
 }}
 
-\item{multi_or_single_site}{direction to determine what kind of check to run
+\item{multi_or_single_site}{\emph{string} | direction to determine what kind of check to run
 string that is either \code{multi} or \code{single}}
 
-\item{anomaly_or_exploratory}{direction to determine what kind of check to run; a string
+\item{anomaly_or_exploratory}{\emph{string} | direction to determine what kind of check to run; a string
 that is either \code{anomaly} or \code{exploratory}}
 
-\item{person_tbl}{CDM \code{person} table}
+\item{person_tbl}{\emph{tabular input} | CDM \code{person} or \code{demographic} table}
 
-\item{visit_tbl}{CDM \code{visit_occurrence} table}
+\item{visit_tbl}{\emph{tabular input} | CDM \code{visit_occurrence}, \code{visit_detail}, or \code{encounter} table}
 
-\item{provider_tbl}{the CDM table with provider & provider specialty information
+\item{provider_tbl}{\emph{tabular input} | the CDM table with provider & provider specialty information
 only used if \code{specialty_concepts} are provided
 if provider_tbl & care_site_tbl are both not null, provider specialty is
 prioritized}
 
-\item{care_site_tbl}{the CDM table with care site / facility & care site / facility specialty information
+\item{care_site_tbl}{\emph{tabular input} | the CDM table with care site / facility & care site / facility specialty information
 only used if \code{specialty_concepts} are provided
 if provider_tbl & care_site_tbl are both not null, provider specialty is
 prioritized}
 
-\item{demographic_mappings}{table defining how demographic elements should be defined
+\item{demographic_mappings}{\emph{tabular input} | table defining how demographic elements should be defined
 if NULL, the default demographic mappings for the CDM will be used
 (either \code{ssc_omop_demographics} or \code{ssc_pcornet_demographics})
 otherwise, the user provided table will be used}
 
-\item{specialty_concepts}{a concept set with provider specialty concepts of interest
+\item{specialty_concepts}{\emph{tabular input} | a concept set with provider specialty concepts of interest
 to be used to identify specialty visits}
 
-\item{outcome_concepts}{a concept set with the following columns:
-\code{concept_id} | \code{concept_code} | \code{concept_name} | \code{vocabulary_id} | \code{variable} | \code{domain}
+\item{outcome_concepts}{\emph{tabular input} | a concept set with the following columns:
+\itemize{
+\item \code{concept_id} | \emph{integer} | required for OMOP; the concept_id of interest
+\item \code{concept_code} | \emph{character} | required for PCORnet; the code of interest
+\item \code{concept_name} | \emph{character} | optional; the descriptive name of the concept
+\item \code{vocabulary_id} | \emph{character} | required for PCORnet; the vocabulary of the code - should match what is listed in the domain table's vocabulary_field
+\item \code{variable} | \emph{character} | required; a string label grouping one concept code into a larger variable definition
+\item \code{domain} | \emph{character} | the CDM table (matching a domain listed in the \code{domain_defs} table) where the
+outcome should be identified
+}}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{                    where domain matches a domain listed in the `domain_defs` table
-}\if{html}{\out{</div>}}}
-
-\item{domain_tbl}{a table with domain definitions with the following columns:
+\item{domain_tbl}{\emph{tabular input} | a table with domain definitions with the following columns:
 domain, domain_tbl, concept_field, date_field, filter_logic}
 
-\item{domain_select}{a vector of domain names that should be used in the computation
+\item{domain_select}{\emph{string or vector} | a vector of domain names that should be used in the computation
 of facts per domain per year of follow up
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{                 this vector does NOT need to include domains used in the computation for
@@ -166,8 +171,7 @@ ssc_process_example
 
 #' Execute `ssc_output` function
 ssc_output_example <- ssc_output(process_output = ssc_process_example,
-                                 output_function = 'ssc_ss_exp_cs',
-                                 alt_cohort_filter = 'alt_cohort_Sample Alternate')
+                                 alt_cohort_filter = 'Sample Alternate')
 
 ssc_output_example
 

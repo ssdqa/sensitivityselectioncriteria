@@ -73,21 +73,30 @@ compare_cohort_def_pcnt <- function(base_cohort,
 
   name_test <- names(alt_cohorts)
 
-  if(is.null(name_test)){
-    num_seq <- seq(1:length(alt_cohorts))
-    names(alt_cohorts) <- num_seq
-  }
-
   for(i in 1:length(alt_cohorts)){
 
-    number <- names(alt_cohorts[i])
+    if(is.null(name_test)){
+      num_seq <- seq(1:length(alt_cohorts))
+      names(alt_cohorts) <- num_seq
 
-    def_flag <- alt_cohorts[[i]] %>%
-      mutate(cohort_id = paste0('alt_cohort_', number)) %>%
-      collect()
+      number <- names(alt_cohorts[i])
 
-    def_flag_list[[i]] <- def_flag
+      def_flag <- alt_cohorts[[i]] %>%
+        mutate(cohort_id = paste0('alt_cohort_', number)) %>%
+        collect()
 
+      def_flag_list[[i]] <- def_flag
+
+    }else{
+
+      name <- names(alt_cohorts[i])
+
+      def_flag <- alt_cohorts[[i]] %>%
+        mutate(cohort_id = paste0(name)) %>%
+        collect()
+
+      def_flag_list[[i]] <- def_flag
+    }
   }
 
   def_flag_final <- purrr::reduce(.x = def_flag_list,

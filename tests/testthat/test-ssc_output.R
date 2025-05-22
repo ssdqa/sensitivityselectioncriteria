@@ -19,7 +19,9 @@ test_that('single site, exploratory, no time', {
                              fact_group = c('Utilization', 'Demographics', 'Utilization', 'Demographics',
                                             'Utilization', 'Demographics'),
                              fact_summary = c(50, 0.5, 20, 0.3, 15, 0.1),
-                             cohort_total_pt = c(100,100,75,75,50,50))
+                             cohort_total_pt = c(100,100,75,75,50,50),
+                             output_function = c('ssc_ss_exp_cs','ssc_ss_exp_cs','ssc_ss_exp_cs',
+                                                 'ssc_ss_exp_cs','ssc_ss_exp_cs','ssc_ss_exp_cs'))
 
   tbl_test2 <- dplyr::tibble(site = c('a', 'a', 'a'),
                              cohort_group = c('base_cohort', 'base_cohort&alt_cohort_1',
@@ -29,11 +31,9 @@ test_that('single site, exploratory, no time', {
   tbl_test <- list(tbl_test1, tbl_test2)
 
   expect_error(ssc_output(process_output = tbl_test,
-                          output_function = 'ssc_ss_exp_cs',
                           alt_cohort_filter = NULL))
 
   expect_no_error(ssc_output(process_output = tbl_test,
-                             output_function = 'ssc_ss_exp_cs',
                              alt_cohort_filter = c('alt_cohort_1','alt_cohort_2')))
 
 })
@@ -50,7 +50,9 @@ test_that('multi site, exploratory, no time', {
                              fact_group = c('Utilization', 'Demographics', 'Utilization', 'Demographics',
                                             'Utilization', 'Demographics'),
                              fact_summary = c(50, 0.5, 20, 0.3, 15, 0.1),
-                             cohort_total_pt = c(100,100,75,75,50,50))
+                             cohort_total_pt = c(100,100,75,75,50,50),
+                             output_function = c('ssc_ms_exp_cs','ssc_ms_exp_cs','ssc_ms_exp_cs',
+                                                 'ssc_ms_exp_cs','ssc_ms_exp_cs','ssc_ms_exp_cs'))
 
   tbl_test2 <- dplyr::tibble(site = c('a', 'a', 'a'),
                              cohort_group = c('base_cohort', 'base_cohort&alt_cohort_1',
@@ -60,11 +62,9 @@ test_that('multi site, exploratory, no time', {
   tbl_test <- list(tbl_test1, tbl_test2)
 
   expect_error(ssc_output(process_output = tbl_test,
-                          output_function = 'ssc_ms_exp_cs',
                           alt_cohort_filter = NULL))
 
   expect_no_error(ssc_output(process_output = tbl_test,
-                             output_function = 'ssc_ms_exp_cs',
                              alt_cohort_filter = c('alt_cohort_1','alt_cohort_2')))
 
 })
@@ -80,10 +80,11 @@ test_that('single site, anomaly, no time', {
                                                       'median_diagnoses', 'prop_black'),
                             fact_group = c('Utilization', 'Demographics', 'Utilization', 'Demographics',
                                            'Utilization', 'Demographics'),
-                            smd_vs_baseline = c(0.1, 0.2, -0.1, 0.05, -0.2, 0.01))
+                            smd_vs_baseline = c(0.1, 0.2, -0.1, 0.05, -0.2, 0.01),
+                            output_function = c('ssc_ss_anom_cs','ssc_ss_anom_cs','ssc_ss_anom_cs',
+                                                'ssc_ss_anom_cs','ssc_ss_anom_cs','ssc_ss_anom_cs'))
 
-  expect_no_error(ssc_output(process_output = tbl_test,
-                             output_function = 'ssc_ss_anom_cs'))
+  expect_no_error(ssc_output(process_output = tbl_test))
 
 })
 
@@ -97,9 +98,10 @@ test_that('multi site, anomaly, no time', {
                                                       'median_diagnoses', 'prop_black'),
                             fact_group = c('Utilization', 'Demographics', 'Utilization', 'Demographics',
                                            'Utilization', 'Demographics'),
-                            smd_vs_baseline = c(0.1, 0.2, -0.1, 0.05, -0.2, 0.01))
+                            smd_vs_baseline = c(0.1, 0.2, -0.1, 0.05, -0.2, 0.01),
+                            output_function = c('ssc_ms_anom_cs','ssc_ms_anom_cs','ssc_ms_anom_cs',
+                                                'ssc_ms_anom_cs','ssc_ms_anom_cs','ssc_ms_anom_cs'))
 
-  expect_no_error(ssc_output(process_output = tbl_test,
-                             output_function = 'ssc_ms_anom_cs'))
+  expect_no_error(ssc_output(process_output = tbl_test))
 
 })

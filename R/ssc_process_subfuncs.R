@@ -239,7 +239,7 @@ compare_cohort_smd <- function(cohort_def_output,
 
   var_vec <- names(prep_tbl)[!names(prep_tbl) %in% c('site', person_col, 'cohort_id')]
 
-  alt_cht_list <- prep_tbl %>% filter(grepl('alt', cohort_id)) %>%
+  alt_cht_list <- prep_tbl %>% filter(cohort_id != 'base_cohort') %>%
     distinct(cohort_id) %>%
     pull()
 
