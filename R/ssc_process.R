@@ -145,17 +145,16 @@ ssc_process <- function(base_cohort,
 
   }else{cli::cli_abort('Invalid argument for {.code omop_or_pcornet}: this function is only compatible with {.code omop} or {.code pcornet}')}
 
-
-  cli::boxx(c('You can optionally use this dataframe in the accompanying',
-              '`ssc_output` function. Here are the parameters you will need:', '', output_type$vector, '',
-              'See ?ssc_output for more details.'), padding = c(0,1,0,1),
-            header = cli::col_cyan('Output Function Details'))
-
   if(anomaly_or_exploratory == 'exploratory'){
     ssc_rslt[[1]] <- ssc_rslt[[1]] %>% mutate(output_function = paste0(output_type$string, 'cs'))
   }else{
     ssc_rslt <- ssc_rslt %>% mutate(output_function = paste0(output_type$string, 'cs'))
   }
+
+  print(cli::boxx(c('You can optionally use this dataframe in the accompanying',
+              '`ssc_output` function. Here are the parameters you will need:', '', output_type$vector, '',
+              'See ?ssc_output for more details.'), padding = c(0,1,0,1),
+            header = cli::col_cyan('Output Function Details')))
 
   return(ssc_rslt)
 
