@@ -21,7 +21,7 @@ compute_domains_ssc <- function(cohort,
   domain_results <- list()
   domain_list <- split(domain_tbl, seq(nrow(domain_tbl)))
 
-  if('person_id' %in% names(cohort)){person_col <- 'person_id'}else{person_col <- 'patid'}
+  if('person_id' %in% colnames(cohort)){person_col <- 'person_id'}else{person_col <- 'patid'}
 
   for (i in 1:length(domain_list)) {
 
@@ -100,8 +100,8 @@ find_outcomes_ssc <- function(cohort,
   concept_domain <- outcome_concepts %>%
     distinct(domain) %>% pull()
 
-  if('person_id' %in% names(cohort)){person_col <- 'person_id'}else{person_col <- 'patid'}
-  if('person_id' %in% names(cohort)){concept_col <- 'concept_id'}else{concept_col <- 'concept_code'}
+  if('person_id' %in% colnames(cohort)){person_col <- 'person_id'}else{person_col <- 'patid'}
+  if('person_id' %in% colnames(cohort)){concept_col <- 'concept_id'}else{concept_col <- 'concept_code'}
 
   otcm_list <- list()
 
@@ -161,7 +161,7 @@ find_outcomes_ssc <- function(cohort,
 compute_cohort_summaries <- function(cohort_def_output,
                                      demographic_vector){
 
-  if('person_id' %in% names(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
+  if('person_id' %in% colnames(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
 
   ## Get patient totals
   cohort_totals <- cohort_def_output %>% group_by(site, cohort_id) %>%
@@ -235,7 +235,7 @@ compare_cohort_smd <- function(cohort_def_output,
     select(-c(start_date, end_date)) %>%
     mutate(across(where(is.logical), ~replace_na(.,FALSE)))
 
-  if('person_id' %in% names(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
+  if('person_id' %in% colnames(cohort_def_output)){person_col <- 'person_id'}else{person_col <- 'patid'}
 
   var_vec <- names(prep_tbl)[!names(prep_tbl) %in% c('site', person_col, 'cohort_id')]
 
