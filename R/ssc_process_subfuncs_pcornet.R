@@ -112,7 +112,7 @@ compare_cohort_def_pcnt <- function(base_cohort,
   grouped_list <- site_filter$grouped_list
   site_col <- site_filter$grouped_list
 
-  cohort_prep <- prepare_cohort(copy_to_new(df = cohort_filter),
+  cohort_prep <- prepare_cohort(cohort_filter,
                                 omop_or_pcornet = 'pcornet') #%>% copy_to_new(df = .)
 
 
