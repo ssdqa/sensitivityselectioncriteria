@@ -4,10 +4,15 @@
 \alias{ssc_ms_anom_cs}
 \title{\emph{Multi-Site, Anomaly Detection, Cross-Sectional}}
 \usage{
-ssc_ms_anom_cs(process_output)
+ssc_ms_anom_cs(process_output, large_n = FALSE, large_n_sites = NULL)
 }
 \arguments{
 \item{process_output}{the output of ssc_process}
+
+\item{large_n}{a boolean indicating whether the large N visualization, intended for a high
+volume of sites, should be used; defaults to FALSE}
+
+\item{large_n_sites}{a vector of site names that can optionally be compared against summary statistics}
 }
 \value{
 a table displaying the mean, median, and iqr standardized mean difference

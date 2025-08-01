@@ -177,10 +177,16 @@ compute_cohort_summaries <- function(cohort_def_output,
   ## Summarise patient level data into medians (ppy vars) and proportions (demographic & outcome vars)
   find_medians <- cohort_flip %>%
     filter(fact_group %in% c('Cohort Details', 'Utilization', 'Clinical Facts')) %>%
-    select(-!!sym(person_col)) %>% group_by(site, cohort_id, cohort_characteristic, fact_group) %>%
+    select(-!!sym(person_col)) %>%
+    group_by(cohort_id, cohort_characteristic, fact_group) %>%
+    mutate(allsite_median = median(fact_value),
+           allsite_q1 = quantile(fact_value, 0.25),
+           allsite_q3 = quantile(fact_value, 0.75)) %>%
+    group_by(site, cohort_id, cohort_characteristic, fact_group,
+             allsite_median, allsite_q1, allsite_q3) %>%
     summarise(fact_summary = median(fact_value)) %>%
     mutate(cohort_characteristic = paste0('median_', cohort_characteristic)) %>%
-    left_join(cohort_totals)
+    left_join(cohort_totals) %>% ungroup()
 
   find_props <- cohort_flip %>%
     filter(fact_group %in% c('Demographics', 'Outcomes')) %>%
@@ -189,8 +195,12 @@ compute_cohort_summaries <- function(cohort_def_output,
     left_join(cohort_totals) %>%
     group_by(site, cohort_id, cohort_characteristic, fact_group) %>%
     summarise(fact_summary = (fact_summary/cohort_total_pt)) %>%
+    group_by(cohort_id, cohort_characteristic, fact_group) %>%
+    mutate(allsite_median = median(fact_summary),
+           allsite_q1 = quantile(fact_summary, 0.25),
+           allsite_q3 = quantile(fact_summary, 0.75)) %>%
     mutate(cohort_characteristic = paste0('prop_', cohort_characteristic)) %>%
-    left_join(cohort_totals)
+    left_join(cohort_totals) %>% ungroup()
 
   summ_tbl <- find_medians %>% union(find_props) %>% distinct()
 

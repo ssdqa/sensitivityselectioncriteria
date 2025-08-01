@@ -148,6 +148,9 @@ ssc_ss_anom_cs <- function(process_output){
 #' @param alt_cohort_filter an vector indicating which alternate cohorts should be
 #'                          displayed; only 2 are allowed at once to maintain visibility
 #'                          in the graph
+#' @param large_n a boolean indicating whether the large N visualization, intended for a high
+#'                volume of sites, should be used; defaults to FALSE
+#' @param large_n_sites a vector of site names that can optionally be compared against summary statistics
 #'
 #' @return two bump charts - one with the continuous facts (that are represented by medians) and
 #' another with the categorical facts (that are represented by proportions)
@@ -155,7 +158,9 @@ ssc_ss_anom_cs <- function(process_output){
 #' of the plot. Otherwise, the base is on the left.
 #'
 ssc_ms_exp_cs <- function(process_output,
-                          alt_cohort_filter){
+                          alt_cohort_filter,
+                          large_n = FALSE,
+                          large_n_sites = NULL){
 
   if(length(alt_cohort_filter) > 2){
     cli::cli_abort('Please limit alternate cohort definitions to two or less at a time')}
@@ -175,6 +180,27 @@ ssc_ms_exp_cs <- function(process_output,
     arrange(fact_group) %>%
     mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
 
+  if(large_n){
+
+    summ_stats <- cat_vars %>%
+      select(cohort_id, cohort_characteristic, cf, allsite_median, allsite_q1, allsite_q3) %>%
+      pivot_longer(cols = c(allsite_median, allsite_q1, allsite_q3),
+                   names_to = 'site',
+                   values_to = 'fact_summary') %>%
+      mutate(site = case_when(site == 'allsite_median' ~ 'All Site Median',
+                              site == 'allsite_q1' ~ 'All Site Q1',
+                              site == 'allsite_q3' ~ 'All Site Q3'),
+             tooltip = paste0('Site: ', site,
+                              '\nCohort: ', cohort_id,
+                              '\nCharacteristic: ', cohort_characteristic,
+                              '\nProportion: ', round(fact_summary, 3)))
+
+    cat_vars <- summ_stats %>%
+      union(cat_vars %>% select(site, cohort_id, cohort_characteristic, cf, fact_summary, tooltip) %>%
+              filter(site %in% large_n_sites))
+
+  }
+
   # Continuous variables (medians)
   cont_vars <- process_output %>% filter(grepl('median', cohort_characteristic),
                                          cohort_id %in% c('base_cohort', alt_cohort_filter)) %>%
@@ -192,6 +218,27 @@ ssc_ms_exp_cs <- function(process_output,
                             '\nMedian PPY: ', fact_summary)) %>%
     arrange(fact_group) %>%
     mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
+
+  if(large_n){
+
+    summ_stats <- cont_vars %>%
+      select(cohort_id, cohort_characteristic, cf, allsite_median, allsite_q1, allsite_q3) %>%
+      pivot_longer(cols = c(allsite_median, allsite_q1, allsite_q3),
+                   names_to = 'site',
+                   values_to = 'fact_summary') %>%
+      mutate(site = case_when(site == 'allsite_median' ~ 'All Site Median',
+                              site == 'allsite_q1' ~ 'All Site Q1',
+                              site == 'allsite_q3' ~ 'All Site Q3'),
+             tooltip = paste0('Site: ', site,
+                              '\nCohort: ', cohort_id,
+                              '\nCharacteristic: ', cohort_characteristic,
+                              '\nProportion: ', round(fact_summary, 3)))
+
+    cont_vars <- summ_stats %>%
+      union(cont_vars %>% select(site, cohort_id, cohort_characteristic, cf, fact_summary, tooltip) %>%
+              filter(site %in% large_n_sites))
+
+  }
 
   # Build vectors based on number of alternate cohorts
   if(length(alt_cohort_filter) == 2){
@@ -268,13 +315,18 @@ ssc_ms_exp_cs <- function(process_output,
 #' *Multi-Site, Anomaly Detection, Cross-Sectional*
 #'
 #' @param process_output the output of ssc_process
+#' @param large_n a boolean indicating whether the large N visualization, intended for a high
+#'                volume of sites, should be used; defaults to FALSE
+#' @param large_n_sites a vector of site names that can optionally be compared against summary statistics
 #'
 #' @return a table displaying the mean, median, and iqr standardized mean difference
 #'           values for each site & alternative cohort definition vs baseline
 #'         a dot plot showing the standardized mean difference value vs baseline for
 #'           each site & alternative cohort definition
 #'
-ssc_ms_anom_cs <- function(process_output){
+ssc_ms_anom_cs <- function(process_output,
+                           large_n = FALSE,
+                           large_n_sites = NULL){
 
   tbl_sum <- process_output %>%
     group_by(cohort_id, site) %>%
@@ -334,24 +386,75 @@ ssc_ms_anom_cs <- function(process_output){
     arrange(fact_group) %>%
     mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
 
-  grph <- ggplot(dat_to_plot, aes(y = cohort_characteristic, x = smd_vs_baseline, color = site)) +
-    geom_point() +
-    #facet_wrap(~cohort_id) +
-    facet_grid(cols = vars(cohort_id), rows = vars(fact_group),
-               scales = 'free_y',
-               labeller = label_wrap_gen()) +
-    geom_vline(xintercept = 0, linetype = 'dotted', alpha = 0.5) +
-    theme_minimal() +
-    scale_color_squba() +
-    scale_y_discrete(expand = c(0.1,0.1)) +
-    theme(#axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-          panel.spacing = unit(0, 'lines'),
-          strip.background = element_rect(),
-          strip.placement = "outside") +
-    labs(title = 'SMD of Alternate Cohorts compared to Base',
-         x = 'SMD',
-         y = 'Cohort Characteristic',
-         color = 'Site')
+  if(!large_n){
+
+    grph <- ggplot(dat_to_plot, aes(y = cohort_characteristic, x = smd_vs_baseline, color = site)) +
+      geom_point() +
+      #facet_wrap(~cohort_id) +
+      facet_grid(cols = vars(cohort_id), rows = vars(fact_group),
+                 scales = 'free_y',
+                 labeller = label_wrap_gen()) +
+      geom_vline(xintercept = 0, linetype = 'dotted', alpha = 0.5) +
+      theme_minimal() +
+      scale_color_squba() +
+      scale_y_discrete(expand = c(0.1,0.1)) +
+      theme(#axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        panel.spacing = unit(0, 'lines'),
+        strip.background = element_rect(),
+        strip.placement = "outside") +
+      labs(title = 'SMD of Alternate Cohorts compared to Base',
+           x = 'SMD',
+           y = 'Cohort Characteristic',
+           color = 'Site')
+  }else{
+
+    summ_stats <- process_output %>%
+      group_by(cohort_id, fact_group, cohort_characteristic) %>%
+      summarise(median_smd = median(smd_vs_baseline),
+                mean_smd = mean(smd_vs_baseline),
+                q1_smd = quantile(smd_vs_baseline)[[2]],
+                q3_smd = quantile(smd_vs_baseline)[[4]]) %>%
+      pivot_longer(cols = c(median_smd, mean_smd, q1_smd, q3_smd),
+                   names_to = 'site',
+                   values_to = 'smd_vs_baseline') %>%
+      mutate(cohort_characteristic = str_remove(cohort_characteristic, 'median_|prop_'),
+             cohort_characteristic = str_remove(cohort_characteristic, '_ppy'),
+             cohort_characteristic = str_replace_all(cohort_characteristic, '_', ' '),
+             cohort_characteristic = case_when(cohort_characteristic == 'fu' ~ 'follow-up',
+                                               TRUE ~ cohort_characteristic),
+             cohort_id = str_remove(cohort_id, 'alt_cohort_'),
+             cohort_id = paste0('Alternate Cohort: ', cohort_id)) %>%
+      arrange(fact_group) %>%
+      mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)),
+             site = case_when(site == 'median_smd' ~ 'All Site Median',
+                              site == 'mean_smd' ~ 'All Site Mean',
+                              site == 'q1_smd' ~ 'All Site Q1',
+                              site == 'q3_smd' ~ 'All Site Q3'),
+             tooltip = paste0('Site: ', site,
+                              '\nCharacteristic: ', cohort_characteristic,
+                              '\nSMD (vs. Base): ', smd_vs_baseline))
+
+    grph <- ggplot(summ_stats, aes(y = cohort_characteristic, x = smd_vs_baseline, color = site)) +
+      geom_point(shape = 8, size = 4) +
+      geom_point(data = dat_to_plot %>% filter(site %in% large_n_sites)) +
+      #facet_wrap(~cohort_id) +
+      facet_grid(cols = vars(cohort_id), rows = vars(fact_group),
+                 scales = 'free_y',
+                 labeller = label_wrap_gen()) +
+      geom_vline(xintercept = 0, linetype = 'dotted', alpha = 0.5) +
+      theme_minimal() +
+      scale_color_squba() +
+      scale_y_discrete(expand = c(0.1,0.1)) +
+      theme(#axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        panel.spacing = unit(0, 'lines'),
+        strip.background = element_rect(),
+        strip.placement = "outside") +
+      labs(title = 'SMD of Alternate Cohorts compared to Base',
+           x = 'SMD',
+           y = 'Cohort Characteristic',
+           color = 'Site')
+
+  }
 
   grph[["metadata"]] <- tibble('pkg_backend' = 'plotly',
                                'tooltip' = FALSE)
