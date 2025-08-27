@@ -267,6 +267,7 @@ compare_cohort_smd <- function(cohort_def_output,
       filter(!site %in% alt_exists_check) %>%
       group_by(site) %>%
       filter(cohort_id %in% c('base_cohort', i)) %>%
+      mutate(cohort_id = ifelse(cohort_id == 'base_cohort', 'zzzzbase_cohort', cohort_id)) %>%
       summarize_at(
         .vars = vars(var_vec),
         .funs = list(smd = ~ smd(., g = cohort_id)$estimate)
