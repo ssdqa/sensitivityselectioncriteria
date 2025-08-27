@@ -4,7 +4,12 @@
 \alias{ssc_output}
 \title{Sensitivity to Selection Criteria -- Output Generation}
 \usage{
-ssc_output(process_output, alt_cohort_filter = NULL)
+ssc_output(
+  process_output,
+  alt_cohort_filter = NULL,
+  large_n = FALSE,
+  large_n_sites = NULL
+)
 }
 \arguments{
 \item{process_output}{\emph{tabular input} | the output from \code{ssc_process}}
@@ -12,6 +17,11 @@ ssc_output(process_output, alt_cohort_filter = NULL)
 \item{alt_cohort_filter}{\emph{string or vector} | required for exploratory output; a vector with the names of
 alternate cohorts to display on the graph; this should be limited
 to 3 or less to maintain good visibility on the graph}
+
+\item{large_n}{\emph{boolean} | for multi site analyses, a boolean indicating whether the large N visualization, intended for a high
+volume of sites, should be used; defaults to FALSE}
+
+\item{large_n_sites}{\emph{vector} | when large_n is TRUE, a vector of site names that can optionally be compared against summary statistics}
 }
 \value{
 a graph visualizing the differences between the alternate cohort definitions and
