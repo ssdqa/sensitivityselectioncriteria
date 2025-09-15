@@ -11,6 +11,9 @@
 #' @param alt_cohort_filter *string or vector* | required for exploratory output; a vector with the names of
 #'                          alternate cohorts to display on the graph; this should be limited
 #'                          to 3 or less to maintain good visibility on the graph
+#' @param large_n *boolean* | for multi site analyses, a boolean indicating whether the large N visualization, intended for a high
+#'                volume of sites, should be used; defaults to FALSE
+#' @param large_n_sites *vector* | when large_n is TRUE, a vector of site names that can optionally be compared against summary statistics
 #'
 #' @return a graph visualizing the differences between the alternate cohort definitions and
 #'         the base cohort; see documentation for each output function for specifics
@@ -20,7 +23,9 @@
 #' @export
 #'
 ssc_output <- function(process_output,
-                       alt_cohort_filter = NULL){
+                       alt_cohort_filter = NULL,
+                       large_n = FALSE,
+                       large_n_sites = NULL){
 
   # extract output function
   if('list' %in% class(process_output)){
@@ -66,11 +71,15 @@ ssc_output <- function(process_output,
     }
 
     ssc_output <- ssc_ms_exp_cs(process_output = inp,
-                                alt_cohort_filter = alt_cohort_filter)
+                                alt_cohort_filter = alt_cohort_filter,
+                                large_n = large_n,
+                                large_n_sites = large_n_sites)
 
   }else if(output_function == 'ssc_ms_anom_cs'){
 
-    ssc_output <- ssc_ms_anom_cs(process_output = process_output)
+    ssc_output <- ssc_ms_anom_cs(process_output = process_output,
+                                 large_n = large_n,
+                                 large_n_sites = large_n_sites)
 
   }else{cli::cli_abort('Please enter a valid output_function for this check')}
 

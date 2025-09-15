@@ -82,6 +82,9 @@ ssc_process_omop <- function(base_cohort,
       ssc_tbl <- compute_cohort_summaries(cohort_def_output = pt_lv_chars,
                                           demographic_vector = demographic_mappings %>%
                                             distinct(demographic) %>% pull())
+      if(multi_or_single_site == 'single'){
+        ssc_tbl[[1]] <- ssc_tbl[[1]] %>% select(-c(allsite_median, allsite_q1, allsite_q3))
+      }
 
     }else if(anomaly_or_exploratory == 'anomaly'){
 

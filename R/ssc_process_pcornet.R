@@ -84,6 +84,10 @@ ssc_process_pcornet <- function(base_cohort,
                                           demographic_vector = demographic_mappings %>%
                                             distinct(demographic) %>% pull())
 
+      if(multi_or_single_site == 'single'){
+        ssc_tbl[[1]] <- ssc_tbl[[1]] %>% select(-c(allsite_median, allsite_q1, allsite_q3))
+      }
+
     }else if(anomaly_or_exploratory == 'anomaly'){
 
       ssc_tbl <- compare_cohort_smd(cohort_def_output = pt_lv_chars,

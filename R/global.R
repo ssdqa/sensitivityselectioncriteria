@@ -12,4 +12,6 @@ utils::globalVariables(c('person_id', 'patid', 'site', 'site_summ', 'fu',
                          'fact_value', 'group_ct', 'has_outcome', 'k_mult',
                          'min_visit', 'n_cht', 'name', 'pv_spec', 'smd_vs_baseline',
                          'tooltip', 'total_fact_ct', 'val_type', 'value', 'variable',
-                         'vocab_col', 'concept_id', 'concept_code', 'facilityid'))
+                         'vocab_col', 'allsite_median', 'allsite_q1', 'allsite_q3',
+                         'mean_smd', 'median_smd', 'q1_smd', 'q3_smd', 'concept_code',
+                         'concept_id', 'facilityid'))
