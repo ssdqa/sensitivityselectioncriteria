@@ -292,6 +292,7 @@ find_specialty_visits_omop <- function(cohort,
                                       visit_tbl = cdm_tbl('visit_occurrence')){
 
   spec_db <- copy_to_new(df = specialty_concepts)
+  spec_codes <- spec_db %>% pull(concept_id)
 
   if('visit_detail_id' %in% colnames(visit_tbl)){
     id_col <- 'visit_detail_id'
@@ -320,9 +321,7 @@ find_specialty_visits_omop <- function(cohort,
                   rename('pv_spec' = specialty_concept_id)) %>%
       left_join(care_site_tbl %>% select(care_site_id, specialty_concept_id) %>%
                   rename('cs_spec' = specialty_concept_id)) %>%
-      mutate(specialty_concept_id = ifelse(is.na(pv_spec), cs_spec, pv_spec)) %>%
-      select(-c(cs_spec, pv_spec)) %>%
-      inner_join(spec_db, by = c('specialty_concept_id' = 'concept_id')) %>%
+      filter(pv_spec %in% spec_codes | cs_spec %in% spec_codes) %>%
       select(all_of(grouped_list), cohort_id, !!sym(id_col)) %>% compute_new()
   }
 

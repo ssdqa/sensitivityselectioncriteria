@@ -281,6 +281,7 @@ find_specialty_visits_pcnt <- function(cohort,
                                       visit_tbl = cdm_tbl('encounter')){
 
   spec_db <- copy_to_new(df = specialty_concepts)
+  spec_codes <- spec_db %>% pull(concept_code)
 
   if(is.null(care_site_tbl) && !is.null(provider_tbl)){
     spec_visits <- visit_tbl %>%
@@ -295,16 +296,13 @@ find_specialty_visits_pcnt <- function(cohort,
         inner_join(spec_db, by = c('facility_type' = 'concept_code')) %>%
         select(all_of(grouped_list), cohort_id, encounterid)
   }else if(!is.null(care_site_tbl) && !is.null(provider_tbl)){
-      spec_visits <- care_site_tbl %>%
+      spec_visits <- visit_tbl %>%
         inner_join(cohort) %>%
         left_join(provider_tbl %>% select(providerid, provider_specialty_primary) %>%
                     rename('pv_spec' = provider_specialty_primary)) %>%
-        # left_join(care_site_tbl %>% select(facilityid, facility_type) %>%
-        #             rename('cs_spec' = facility_type)) %>%
-        rename('cs_spec' = facility_type) %>%
-        mutate(specialty_concept_id = ifelse(is.na(pv_spec), cs_spec, pv_spec)) %>%
-        select(-c(cs_spec, pv_spec)) %>%
-        inner_join(spec_db, by = c('specialty_concept_id' = 'concept_code')) %>%
+        left_join(care_site_tbl %>% select(facilityid, facility_type) %>%
+                    rename('cs_spec' = facility_type)) %>%
+        filter(pv_spec %in% spec_codes | cs_spec %in% spec_codes) %>%
         select(all_of(grouped_list), cohort_id, encounterid)
   }
 
