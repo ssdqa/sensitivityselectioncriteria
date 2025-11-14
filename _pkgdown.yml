@@ -1,0 +1,29 @@
+url: https://ssdqa.github.io/sensitivityselectioncriteria/
+template:
+  bootstrap: 5
+  light-switch: true
+navbar:
+  left:
+  - text: 'squba Home'
+    href: https://ssdqa.github.io/squba/
+  - text: 'Reference'
+    href: reference/index.html
+  - text: 'Articles'
+    href: articles/index.html
+    menu:
+    - text: 'Multi-Site Analysis for Independent Data Sources'
+      href: articles/multisite_independent.html
+  - text: 'PEDSpace'
+    href: https://hdl.handle.net/20.500.14642/37
+reference:
+- title: 'Module Execution'
+  contents:
+  - ssc_process
+  - ssc_output
+- title: 'Sample Input'
+  contents:
+  - ssc_domain_file
+  - ssc_outcome_file
+  - ssc_omop_demographics
+  - ssc_pcornet_demographics
+
