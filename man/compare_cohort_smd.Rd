@@ -20,3 +20,4 @@ the computed variables
 \description{
 Compute Standardized Mean Difference between cohort definitions
 }
+\keyword{internal}

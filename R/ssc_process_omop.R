@@ -44,6 +44,8 @@
 #'         between the base cohort and each alternate cohort definition is computed for each
 #'         of the variables of interest
 #'
+#' @keywords internal
+#'
 ssc_process_omop <- function(base_cohort,
                              alt_cohorts,
                              multi_or_single_site = 'single',

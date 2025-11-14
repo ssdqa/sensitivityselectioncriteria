@@ -19,3 +19,4 @@ that labels each of the computed variables for easier grouping
 \description{
 Add labels to cohort variable groups
 }
+\keyword{internal}

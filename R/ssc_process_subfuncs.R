@@ -13,6 +13,8 @@
 #'
 #' @importFrom rlang parse_expr
 #'
+#' @keywords internal
+#'
 compute_domains_ssc <- function(cohort,
                                 site_col,
                                 grouped_list,
@@ -92,6 +94,8 @@ compute_domains_ssc <- function(cohort,
 #' @importFrom tidyr pivot_wider
 #' @importFrom purrr set_names
 #'
+#' @keywords internal
+#'
 find_outcomes_ssc <- function(cohort,
                               site_col,
                               domain_tbl,
@@ -157,6 +161,8 @@ find_outcomes_ssc <- function(cohort,
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyr unite
 #' @importFrom stats median
+#'
+#' @keywords internal
 #'
 compute_cohort_summaries <- function(cohort_def_output,
                                      demographic_vector){
@@ -238,6 +244,8 @@ compute_cohort_summaries <- function(cohort_def_output,
 #' @import smd
 #' @importFrom stringr str_remove
 #'
+#' @keywords internal
+#'
 compare_cohort_smd <- function(cohort_def_output,
                                demographic_vector){
 
@@ -295,6 +303,8 @@ compare_cohort_smd <- function(cohort_def_output,
 #'
 #' @return returns the same input dataframe with an additional fact_group column
 #'         that labels each of the computed variables for easier grouping
+#'
+#' @keywords internal
 #'
 apply_cohort_labels <- function(df,
                                 demographic_vector){

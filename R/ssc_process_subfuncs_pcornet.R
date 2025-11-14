@@ -46,6 +46,8 @@
 #' @importFrom purrr reduce
 #' @importFrom tidyr replace_na
 #'
+#' @keywords internal
+#'
 
 compare_cohort_def_pcnt <- function(base_cohort,
                                    alt_cohorts,
@@ -194,6 +196,8 @@ compare_cohort_def_pcnt <- function(base_cohort,
 #'         fu, age_cohort_entry, age_first_visit, and each of the demographic
 #'         elements found in demographic_mappings
 #'
+#' @keywords internal
+#'
 
 compute_demographic_summary_pcnt <- function(cohort_tbl,
                                             site_col,
@@ -271,6 +275,8 @@ compute_demographic_summary_pcnt <- function(cohort_tbl,
 #'         for each of the patients in the cohort
 #'
 #' @importFrom tidyr tibble
+#'
+#' @keywords internal
 #'
 find_specialty_visits_pcnt <- function(cohort,
                                       site_col,

@@ -44,6 +44,7 @@
 #'         between the base cohort and each alternate cohort definition is computed for each
 #'         of the variables of interest
 #'
+#' @keywords internal
 #'
 ssc_process_pcornet <- function(base_cohort,
                                alt_cohorts,

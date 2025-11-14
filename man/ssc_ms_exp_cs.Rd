@@ -32,3 +32,4 @@ of the plot. Otherwise, the base is on the left.
 \description{
 \emph{Multi-Site, Exploratory, Cross-Sectional}
 }
+\keyword{internal}

@@ -23,6 +23,8 @@ NULL
 #' @return an UpSet graph illustrating the overlap in patients between the two cohorts
 #'         a bar graph showing the difference between each alternate cohort and the base cohort
 #'
+#' @keywords internal
+#'
 ssc_ss_exp_cs <- function(summary_output,
                           cohort_overlap,
                           alt_cohort_filter){
@@ -102,6 +104,8 @@ ssc_ss_exp_cs <- function(summary_output,
 #' @return a heat map displaying the standardized mean difference between
 #'         the base cohort and each of the alternate cohorts
 #'
+#' @keywords internal
+#'
 ssc_ss_anom_cs <- function(process_output){
 
 
@@ -156,6 +160,8 @@ ssc_ss_anom_cs <- function(process_output){
 #' another with the categorical facts (that are represented by proportions)
 #' if two alternate cohort definitions are provided, the base cohort is placed in the middle
 #' of the plot. Otherwise, the base is on the left.
+#'
+#' @keywords internal
 #'
 ssc_ms_exp_cs <- function(process_output,
                           alt_cohort_filter,
@@ -215,7 +221,7 @@ ssc_ms_exp_cs <- function(process_output,
            tooltip = paste0('Site: ', site,
                             '\nCohort: ', cohort_id,
                             '\nCharacteristic: ', cohort_characteristic,
-                            '\nMedian PPY: ', fact_summary)) %>%
+                            '\nMedian: ', fact_summary)) %>%
     arrange(fact_group) %>%
     mutate(cf = factor(cohort_characteristic, levels = unique(cohort_characteristic)))
 
@@ -269,11 +275,11 @@ ssc_ms_exp_cs <- function(process_output,
     theme_minimal() +
     theme(strip.background = element_rect(),
           panel.border = element_rect(fill = NA)) +
-    labs(y = 'Median (PPY)',
+    labs(y = 'Median',
          x = 'Cohort',
          color = 'Site',
          shape = 'Cohort',
-         title = 'Median Facts PPY per Site')
+         title = 'Median Facts per Site')
 
   # if(length(alt_cohort_filter == 2)){cont_bp <- cont_bp + geom_vline(xintercept = 1.98, linetype = 'dotted') +
   #   geom_vline(xintercept = 2.02, linetype = 'dotted')}
@@ -323,6 +329,8 @@ ssc_ms_exp_cs <- function(process_output,
 #'           values for each site & alternative cohort definition vs baseline
 #'         a dot plot showing the standardized mean difference value vs baseline for
 #'           each site & alternative cohort definition
+#'
+#' @keywords internal
 #'
 ssc_ms_anom_cs <- function(process_output,
                            large_n = FALSE,

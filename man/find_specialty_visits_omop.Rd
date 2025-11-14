@@ -44,3 +44,4 @@ for each of the patients in the cohort
 \description{
 Compute specialty visits per person year
 }
+\keyword{internal}

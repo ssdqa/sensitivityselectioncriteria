@@ -7,11 +7,10 @@ conn <- mk_testdb_omop()
 
 #' Establish connection to database and generate internal configurations
 initialize_dq_session(session_name = 'ssc_process_test',
-                      working_directory = getwd(),
+                      working_directory = my_directory,
                       db_conn = conn,
                       is_json = FALSE,
-                      file_subdirectory = system.file('extdata',
-                                        package = 'sensitivityselectioncriteria'),
+                      file_subdirectory = my_file_folder,
                       cdm_schema = NA)
 
 #' Build mock base study cohort
@@ -52,15 +51,18 @@ ssc_process_example <- ssc_process(base_cohort = base_cohort,
                                    anomaly_or_exploratory = 'exploratory',
                                    domain_tbl = ssc_domain_tbl,
                                    domain_select = c('all conditions', 'outpatient visits'),
-                                   outcome_concepts = ssc_outcome_tbl)
+                                   outcome_concepts = ssc_outcome_tbl) %>%
+  suppressMessages()
 
 ssc_process_example
 
 #' Execute `ssc_output` function
 ssc_output_example <- ssc_output(process_output = ssc_process_example,
-                                 alt_cohort_filter = 'Sample Alternate')
+                                 alt_cohort_filter = 'Sample Alternate') %>%
+  suppressMessages()
 
-ssc_output_example
+ssc_output_example[[1]]
+ssc_output_example[[2]]
 
 #' Easily convert the graph into an interactive ggiraph or plotly object with
 #' `make_interactive_squba()`

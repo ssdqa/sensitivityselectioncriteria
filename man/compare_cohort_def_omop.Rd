@@ -81,3 +81,4 @@ with flags to show which cohort definitions apply to the patient.
 \description{
 Reformat cohort definition tables
 }
+\keyword{internal}

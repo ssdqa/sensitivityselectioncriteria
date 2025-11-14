@@ -46,6 +46,8 @@
 #' @importFrom purrr reduce
 #' @importFrom tidyr replace_na
 #'
+#' @keywords internal
+#'
 
 compare_cohort_def_omop <- function(base_cohort,
                                    alt_cohorts,
@@ -197,6 +199,8 @@ compare_cohort_def_omop <- function(base_cohort,
 #' @importFrom stringr str_split
 #' @importFrom rlang :=
 #'
+#' @keywords internal
+#'
 
 compute_demographic_summary_omop <- function(cohort_tbl,
                                             site_col,
@@ -282,6 +286,8 @@ compute_demographic_summary_omop <- function(cohort_tbl,
 #'         for each of the patients in the cohort
 #'
 #' @importFrom tidyr tibble
+#'
+#' @keywords internal
 #'
 find_specialty_visits_omop <- function(cohort,
                                       site_col,

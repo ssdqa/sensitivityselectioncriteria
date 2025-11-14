@@ -24,3 +24,4 @@ within the cohort period for each of the patients in the cohort
 \description{
 Compute domain facts per person year
 }
+\keyword{internal}

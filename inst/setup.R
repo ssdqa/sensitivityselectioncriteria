@@ -1,5 +1,12 @@
 # Generate a test DB with synthetic omop data
 testdb <- NULL
+if(grepl('^/home/runner/', getwd())){
+  my_directory <- '/home/runner/work/_temp/Library/sensitivityselectioncriteria'
+  my_file_folder <- 'extdata'
+}else{
+  my_directory <- getwd()
+  my_file_folder <- system.file('extdata', package = 'sensitivityselectioncriteria')
+}
 # Function to generate omop test db
 mk_testdb_omop <- function(){
   if (! is.null(testdb)) return(testdb)

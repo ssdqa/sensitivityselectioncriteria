@@ -36,3 +36,4 @@ to show which facts apply to each patient:
 \description{
 Compute patient level fact summary
 }
+\keyword{internal}

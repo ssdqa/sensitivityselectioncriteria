@@ -8,7 +8,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/expectedvariablespresent)](https://CRAN.R-project.org/package=sensitivityselectioncriteria)
 <!-- badges: end -->
 
-The Sensitivity to Selection Criteria module summarizes demographic makeup and fact distribution differences between a base cohort definition and alternate cohort definitions.
+The Sensitivity to Selection Criteria module summarizes demographic makeup and fact distribution differences between a base cohort definition and alternate cohort definitions. This functionality will allow users to assess which cohort definition best fits their needs in a study context. 
 
 ## Installation
 
@@ -18,4 +18,3 @@ You can install the development version of this package like so:
 devtools::install_github('ssdqa/sensitivityselectioncriteria')
 ```
 
-## End

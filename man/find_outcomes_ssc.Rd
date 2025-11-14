@@ -28,3 +28,4 @@ have the outcome(s) of interest
 \description{
 Find presence of outcomes in cohort definitions
 }
+\keyword{internal}

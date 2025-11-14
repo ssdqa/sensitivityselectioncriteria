@@ -7,16 +7,36 @@
 #' be adjusted by the user after the graph has been output using `+ theme()`. Most graphs can
 #' also be made interactive using `make_interactive_squba()`
 #'
-#' @param process_output *tabular input* | the output from `ssc_process`
-#' @param alt_cohort_filter *string or vector* | required for exploratory output; a vector with the names of
-#'                          alternate cohorts to display on the graph; this should be limited
-#'                          to 3 or less to maintain good visibility on the graph
-#' @param large_n *boolean* | for multi site analyses, a boolean indicating whether the large N visualization, intended for a high
-#'                volume of sites, should be used; defaults to FALSE
-#' @param large_n_sites *vector* | when large_n is TRUE, a vector of site names that can optionally be compared against summary statistics
+#' @param process_output *tabular input* || **required**
 #'
-#' @return a graph visualizing the differences between the alternate cohort definitions and
-#'         the base cohort; see documentation for each output function for specifics
+#'   The tabular output produced by `ssc_process`
+#'
+#' @param alt_cohort_filter *string or vector* || defaults to `NULL`
+#'
+#'   A vector with the names of alternate cohorts to display in the output.
+#'   This should be limited to 2 or less to maintain good visibility on the graph.
+#'   This parameter is required for the following check types:
+#'   - `Single Site, Exploratory, Cross-Sectional`
+#'   - `Multi-Site, Exploratory, Cross-Sectional`
+#'
+#' @param large_n *boolean* || defaults to `FALSE`
+#'
+#'   For Multi-Site analyses, a boolean indicating whether the large N
+#'   visualization, intended for a high volume of sites, should be used. This
+#'   visualization will produce high level summaries across all sites, with an
+#'   option to add specific site comparators via the `large_n_sites` parameter.
+#'
+#' @param large_n_sites *vector* || defaults to `NULL`
+#'
+#'   When `large_n = TRUE`, a vector of site names that can add site-level information
+#'   to the plot for comparison across the high level summary information.
+#'
+#' @return This function will produce a graph to visualize the results
+#'         from `ssc_process` based on the parameters provided. The default
+#'         output is typically a static ggplot or gt object, but interactive
+#'         elements can be activated by passing the plot through `make_interactive_squba`.
+#'         For a more detailed description of output specific to each check type,
+#'         see the PEDSpace metadata repository
 #'
 #' @example inst/example-ssc_process_output.R
 #'
