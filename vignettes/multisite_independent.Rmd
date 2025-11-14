@@ -35,7 +35,6 @@ my_table <- ssc_process(base_cohort = my_cohort,
 This function will produce 2 tables. Select the **first** table in the list from each result set, then combine these results into a single table with the different sites delineated in the `site` column.
 
 ```{r, eval=FALSE}
-
 my_final_results <- my_table1[[1]] %>% dplyr::union(my_table2[[1]]) ... %>%
   dplyr::union(my_table_n[[1]])
 
@@ -48,7 +47,6 @@ It is slightly more complex to reproduce the anomaly detection analysis in this 
 The first step will be to run the appropriate internal function, depending on which CDM you are using, against each of the data sources. It intakes most of the same parameters as the primary `ssc_process` function.
 
 ```{r, eval=FALSE}
-
 ## For an OMOP CDM:
 my_omop_table <- 
   sensitivityselectioncriteria:::compare_cohort_def_omop(
@@ -70,7 +68,6 @@ my_pcornet_table <-
 Once this function has been executed against each data source, combine these results into a single table with the different sites delineated in the `site` column.
 
 ```{r, eval=FALSE}
-
 my_combo_results <- my_table1 %>% dplyr::union(my_table2) ... %>%
   dplyr::union(my_table_n)
 
@@ -79,7 +76,6 @@ my_combo_results <- my_table1 %>% dplyr::union(my_table2) ... %>%
 Then, pass this combined table through the anomaly detection function that will execute a standardized mean difference computation. If you provided custom demographic mappings, extract the demographic labels from this file. Otherwise, use the appropriate package-provided table based on your data model (either `ssc_omop_demographics` or `ssc_pcornet_demographics`).
 
 ```{r, eval=FALSE}
-
 my_final_results <- 
   sensitivityselectioncriteria:::compare_cohort_smd(cohort_def_output = my_combo_results,
                                                     demographic_vector = 

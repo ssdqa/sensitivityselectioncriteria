@@ -13,6 +13,9 @@ initialize_dq_session(session_name = 'ssc_process_test',
                       file_subdirectory = my_file_folder,
                       cdm_schema = NA)
 
+## silence SQL trace for this example
+config('db_trace', FALSE)
+
 #' Build mock base study cohort
 base_cohort <- cdm_tbl('person') %>% dplyr::distinct(person_id) %>%
   dplyr::mutate(start_date = as.Date(-5000),
