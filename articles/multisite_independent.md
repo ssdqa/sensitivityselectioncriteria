@@ -45,7 +45,6 @@ It intakes most of the same parameters as the primary `ssc_process`
 function.
 
 ``` r
-
 ## For an OMOP CDM:
 my_omop_table <- 
   sensitivityselectioncriteria:::compare_cohort_def_omop(
@@ -80,7 +79,6 @@ based on your data model (either `ssc_omop_demographics` or
 `ssc_pcornet_demographics`).
 
 ``` r
-
 my_final_results <- 
   sensitivityselectioncriteria:::compare_cohort_smd(cohort_def_output = my_combo_results,
                                                     demographic_vector = 

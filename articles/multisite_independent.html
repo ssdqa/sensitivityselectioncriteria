@@ -98,9 +98,8 @@ source.</p>
 <strong>first</strong> table in the list from each result set, then
 combine these results into a single table with the different sites
 delineated in the <code>site</code> column.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>my_final_results <span class="ot">&lt;-</span> my_table1[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">union</span>(my_table2[[<span class="dv">1</span>]]) ... <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">union</span>(my_table_n[[<span class="dv">1</span>]])</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>my_final_results <span class="ot">&lt;-</span> my_table1[[<span class="dv">1</span>]] <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">union</span>(my_table2[[<span class="dv">1</span>]]) ... <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">union</span>(my_table_n[[<span class="dv">1</span>]])</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="multi-site-anomaly-detection-analysis">Multi-Site Anomaly Detection Analysis<a class="anchor" aria-label="anchor" href="#multi-site-anomaly-detection-analysis"></a>
@@ -115,8 +114,7 @@ depending on which CDM you are using, against each of the data sources.
 It intakes most of the same parameters as the primary
 <code>ssc_process</code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">## For an OMOP CDM:</span></span>
+<code class="sourceCode R"><span><span class="co">## For an OMOP CDM:</span></span>
 <span><span class="va">my_omop_table</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">sensitivityselectioncriteria</span><span class="fu">:::</span><span class="fu"><a href="../reference/compare_cohort_def_omop.html">compare_cohort_def_omop</a></span><span class="op">(</span></span>
 <span>                                    base_cohort <span class="op">=</span> <span class="va">my_cohort</span>,</span>
@@ -134,9 +132,8 @@ It intakes most of the same parameters as the primary
 <p>Once this function has been executed against each data source,
 combine these results into a single table with the different sites
 delineated in the <code>site</code> column.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>my_combo_results <span class="ot">&lt;-</span> my_table1 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">union</span>(my_table2) ... <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">union</span>(my_table_n)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>my_combo_results <span class="ot">&lt;-</span> my_table1 <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">union</span>(my_table2) ... <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">union</span>(my_table_n)</span></code></pre></div>
 <p>Then, pass this combined table through the anomaly detection function
 that will execute a standardized mean difference computation. If you
 provided custom demographic mappings, extract the demographic labels
@@ -144,8 +141,7 @@ from this file. Otherwise, use the appropriate package-provided table
 based on your data model (either <code>ssc_omop_demographics</code> or
 <code>ssc_pcornet_demographics</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="va">my_final_results</span> <span class="op">&lt;-</span> </span>
+<code class="sourceCode R"><span><span class="va">my_final_results</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu">sensitivityselectioncriteria</span><span class="fu">:::</span><span class="fu"><a href="../reference/compare_cohort_smd.html">compare_cohort_smd</a></span><span class="op">(</span>cohort_def_output <span class="op">=</span> <span class="va">my_combo_results</span>,</span>
 <span>                                                    demographic_vector <span class="op">=</span> </span>
 <span>                                                      <span class="va">my_demographic_table</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
