@@ -24,11 +24,14 @@ my_table <- ssc_process(base_cohort = my_cohort,
 
 This function will produce 2 tables. Select the **first** table in the
 list from each result set, then combine these results into a single
-table with the different sites delineated in the `site` column.
+table with the different sites delineated in the `site` column. You will
+also need to edit the `output_function` column to reflect that this
+table now should be considered a Multi Site, Exploratory output.
 
 ``` r
 my_final_results <- my_table1[[1]] %>% dplyr::union(my_table2[[1]]) ... %>%
-  dplyr::union(my_table_n[[1]])
+  dplyr::union(my_table_n[[1]]) %>%
+  dplyr::mutate(output_function = 'ssc_ms_exp_cs')
 ```
 
 ## Multi-Site Anomaly Detection Analysis
@@ -78,10 +81,15 @@ from this file. Otherwise, use the appropriate package-provided table
 based on your data model (either `ssc_omop_demographics` or
 `ssc_pcornet_demographics`).
 
+You will also need to edit the `output_function` column to reflect that
+this table now should be considered a Multi Site, Anomaly Detection
+output.
+
 ``` r
 my_final_results <- 
   sensitivityselectioncriteria:::compare_cohort_smd(cohort_def_output = my_combo_results,
                                                     demographic_vector = 
                                                       my_demographic_table %>%
-                                                        select(demographic) %>% pull())
+                                                        select(demographic) %>% pull()) %>%
+  dplyr::mutate(output_function = 'ssc_ms_anom_cs')
 ```
