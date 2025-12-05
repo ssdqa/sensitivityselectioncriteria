@@ -41,7 +41,7 @@ Depends:
     R (>= 2.10),
     squba.gen
 LazyData: true
-Remotes: PEDSnet/argos, ssdqa/squba.gen
+Remotes: PEDSnet/argos, ssdqa/squba.gen, davidsjoberg/ggbump
 Suggests: 
     DBI (>= 1.1.3),
     knitr,
