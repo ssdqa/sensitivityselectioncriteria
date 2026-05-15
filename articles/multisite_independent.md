@@ -12,6 +12,7 @@ First, execute the **Single Site, Exploratory** analyses, configured
 appropriately for your study, against each data source.
 
 ``` r
+
 library(sensitivityselectioncriteria)
 
 my_table <- ssc_process(base_cohort = my_cohort,
@@ -48,6 +49,7 @@ It intakes most of the same parameters as the primary `ssc_process`
 function.
 
 ``` r
+
 ## For an OMOP CDM:
 my_omop_table <- 
   sensitivityselectioncriteria:::compare_cohort_def_omop(
@@ -86,6 +88,7 @@ this table now should be considered a Multi Site, Anomaly Detection
 output.
 
 ``` r
+
 my_final_results <- 
   sensitivityselectioncriteria:::compare_cohort_smd(cohort_def_output = my_combo_results,
                                                     demographic_vector = 

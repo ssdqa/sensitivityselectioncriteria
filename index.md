@@ -11,5 +11,6 @@ study context.
 You can install the development version of this package like so:
 
 ``` r
+
 devtools::install_github('ssdqa/sensitivityselectioncriteria')
 ```
