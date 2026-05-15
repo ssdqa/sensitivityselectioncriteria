@@ -17,7 +17,7 @@ Description: The Sensitivity to Selection Criteria module, part of the larger SQ
 License: MPL-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 URL: https://github.com/ssdqa/sensitivityselectioncriteria, https://pedsnet.org/metadata/handle/20.500.14642/37, https://ssdqa.github.io/sensitivityselectioncriteria/
 BugReports: https://github.com/ssdqa/sensitivityselectioncriteria/issues
 Imports: 

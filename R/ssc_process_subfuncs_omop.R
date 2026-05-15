@@ -216,6 +216,7 @@ compute_demographic_summary_omop <- function(cohort_tbl,
 
     vals <- demo_list[[i]]$field_values %>%
       str_replace_all(" ", "") %>% str_split(',') %>% unlist()
+    if(!any(grepl('[a-zA-Z]', vals))){vals <- as.numeric(vals)}
 
     demographic <- person_tbl %>%
       inner_join(cohort_tbl) %>%
