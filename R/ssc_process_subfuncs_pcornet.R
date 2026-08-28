@@ -306,8 +306,9 @@ find_specialty_visits_pcnt <- function(cohort,
         inner_join(cohort) %>%
         left_join(provider_tbl %>% select(providerid, provider_specialty_primary) %>%
                     rename('pv_spec' = provider_specialty_primary)) %>%
-        left_join(care_site_tbl %>% select(facilityid, facility_type) %>%
-                    rename('cs_spec' = facility_type)) %>%
+        rename('cs_spec' = facility_type) %>%
+        # left_join(care_site_tbl %>% select(facilityid, facility_type) %>%
+        #             rename('cs_spec' = facility_type)) %>%
         filter(pv_spec %in% spec_codes | cs_spec %in% spec_codes) %>%
         select(all_of(grouped_list), cohort_id, encounterid)
   }
