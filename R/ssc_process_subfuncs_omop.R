@@ -298,7 +298,11 @@ find_specialty_visits_omop <- function(cohort,
                                       care_site_tbl = NULL,
                                       visit_tbl = cdm_tbl('visit_occurrence')){
 
-  spec_db <- copy_to_new(df = specialty_concepts)
+  if(any(class(specialty_concepts) %in% 'tbl_sql')){
+    spec_db <- specialty_concepts
+  }else{
+    spec_db <- copy_to_new(df = specialty_concepts)
+  }
   spec_codes <- spec_db %>% pull(concept_id)
 
   if('visit_detail_id' %in% colnames(visit_tbl)){

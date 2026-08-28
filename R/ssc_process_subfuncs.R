@@ -122,7 +122,11 @@ find_outcomes_ssc <- function(cohort,
       join_cols <- join_cols %>% append(join_cols2)
     }
 
-    outcome_db <- copy_to_new(df = outcome_concepts)
+    if(any(class(outcome_concepts) %in% 'tbl_sql')){
+      outcome_db <- outcome_concepts
+    }else{
+      outcome_db <- copy_to_new(df = outcome_concepts)
+    }
 
     outcome_present <- cdm_tbl(domain_info$domain_tbl) %>%
       inner_join(cohort) %>%
